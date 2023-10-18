@@ -6,6 +6,10 @@ import type { SvgIconProps } from '@mui/material/SvgIcon';
 enum Pages {
   Welcome,
   CreateNewWallet,
+  Wallets,
+  Send,
+  Receive,
+  Transactions,
   NotFound,
 }
 

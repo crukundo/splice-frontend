@@ -36,7 +36,7 @@ function Welcome() {
                 Create a new wallet
               </Button>
               <Divider>OR</Divider>
-              <Button variant="outlined" onClick={() => 0} size="large">
+              <Button variant="outlined" onClick={() => 0} size="large" disabled>
                 Use existing wallet
               </Button>
             </Stack>

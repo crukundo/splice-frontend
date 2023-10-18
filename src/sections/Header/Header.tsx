@@ -1,8 +1,9 @@
+import { Link } from 'react-router-dom';
+
+import DefaultIcon from '@mui/icons-material/Deblur';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import ThemeIcon from '@mui/icons-material/InvertColors';
 import MenuIcon from '@mui/icons-material/Menu';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -13,34 +14,15 @@ import Tooltip from '@mui/material/Tooltip';
 
 import { FlexBox } from '@/components/styled';
 import { repository, title } from '@/config';
-import useNotifications from '@/store/notifications';
+import useOrientation from '@/hooks/useOrientation';
+import routes from '@/routes';
 import useSidebar from '@/store/sidebar';
 import useTheme from '@/store/theme';
 
 function Header() {
   const [, sidebarActions] = useSidebar();
   const [, themeActions] = useTheme();
-  const [, notificationsActions] = useNotifications();
-
-  function showNotification() {
-    notificationsActions.push({
-      options: {
-        // Show fully customized notification
-        // Usually, to show a notification, you'll use something like this:
-        // notificationsActions.push({ message: ... })
-        // `message` accepts string as well as ReactNode
-        // But you also can use:
-        // notificationsActions.push({ options: { content: ... } })
-        // to show fully customized notification
-        content: (
-          <Alert severity="info">
-            <AlertTitle>Notification title</AlertTitle>
-            Notification summary content
-          </Alert>
-        ),
-      },
-    });
-  }
+  const isPortrait = useOrientation();
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -57,10 +39,31 @@ function Header() {
             >
               <MenuIcon />
             </IconButton>
-            <Button onClick={showNotification} color="info">
+            <Button component={Link} to={'/'} color="info">
               {title}
             </Button>
           </FlexBox>
+          {!isPortrait && (
+            <FlexBox title="Middle">
+              <Divider orientation="vertical" flexItem />
+              {Object.values(routes)
+                .filter((route) => route.title)
+                .map(({ path, title, icon: Icon }) => (
+                  <>
+                    <Button
+                      key={path}
+                      component={Link}
+                      to={path as string}
+                      color="info"
+                      startIcon={Icon ? <Icon /> : <DefaultIcon />}
+                    >
+                      {title}
+                    </Button>
+                    <Divider orientation="vertical" flexItem />
+                  </>
+                ))}
+            </FlexBox>
+          )}
           <FlexBox>
             <Divider orientation="vertical" flexItem />
             <Tooltip title="It's open source" arrow>
