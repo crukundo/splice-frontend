@@ -30,7 +30,7 @@ function CreateNewWallet() {
     setMobileNumber(newNumber);
   };
 
-  const handleWithdrawFee = (newFee: number) => {
+  const handleWithdrawFee = (newFee: any) => {
     setWithdrawFee(newFee);
   };
 
@@ -99,7 +99,8 @@ function CreateNewWallet() {
                   id="withdraw-fees"
                   label="Withdraw fee"
                   type="number"
-                  onChange={() => handleWithdrawFee}
+                  onChange={handleWithdrawFee}
+                  value={withdrawFee}
                   helperText={`Fixed fee you will charge users to withdraw BTC in ${selectedCountry?.currency}?`}
                 />
               )}
