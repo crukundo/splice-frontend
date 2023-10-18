@@ -6,7 +6,7 @@ import { FullSizeCenteredFlexBox } from '@/components/styled';
 function Receive() {
   return (
     <>
-      <Meta title="Create a new wallet" />
+      <Meta title="Receive money" />
       <FullSizeCenteredFlexBox>
         <Box width={480}>
           <Paper sx={{ p: 5 }} elevation={3}>

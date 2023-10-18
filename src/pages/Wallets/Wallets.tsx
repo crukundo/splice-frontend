@@ -6,7 +6,7 @@ import { FullSizeCenteredFlexBox } from '@/components/styled';
 function Wallets() {
   return (
     <>
-      <Meta title="Create a new wallet" />
+      <Meta title="Your wallets" />
       <FullSizeCenteredFlexBox>
         <Box width={480}>
           <Paper sx={{ p: 5 }} elevation={3}>
