@@ -30,8 +30,9 @@ function CreateNewWallet() {
     setMobileNumber(newNumber);
   };
 
-  const handleWithdrawFee = (newFee: any) => {
-    setWithdrawFee(newFee);
+  const handleWithdrawFee = (event: any) => {
+    const inputFee = event.target.value;
+    setWithdrawFee(inputFee);
   };
 
   return (
