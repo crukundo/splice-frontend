@@ -1,19 +1,15 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { CurrencyBitcoin } from '@mui/icons-material';
 import {
   Avatar,
   Box,
-  Card,
-  CardContent,
-  CircularProgress,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   Skeleton,
   Stack,
-  Typography,
 } from '@mui/material';
 
 import { BitcoinIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
@@ -21,9 +17,27 @@ import { BitcoinIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 import Meta from '@/components/Meta';
 import { FullSizeAtopFlexBox } from '@/components/styled';
 import { apiUrl, storedWalletId } from '@/config';
+import useNotifications from '@/store/notifications';
 import { BalanceProps, WalletRequestResponse } from '@/utils/interfaces';
 
 function Wallet() {
+  const navigate = useNavigate();
+  const [, notifyActions] = useNotifications();
+  const storedWallet = localStorage.getItem(storedWalletId);
+
+  useEffect(() => {
+    if (!storedWallet) {
+      navigate('/');
+      notifyActions.push({
+        message: 'No wallet found',
+        dismissed: true,
+        options: {
+          variant: 'error',
+        },
+      });
+    }
+  }, [storedWallet]);
+
   const [userWallet, setUserWallet] = React.useState<WalletRequestResponse | null>(null);
   const [loading, setLoading] = React.useState(false);
 
@@ -55,7 +69,6 @@ function Wallet() {
   };
 
   const getUserWallet = async () => {
-    const storedWallet = localStorage.getItem(storedWalletId);
     try {
       setLoading(true);
       const response = await fetch(`${apiUrl}/wallets/${storedWallet}`, {
@@ -92,11 +105,19 @@ function Wallet() {
   };
 
   useEffect(() => {
-    if (!userWallet) {
+    if (storedWallet) {
       getUserWallet();
+    } else {
+      navigate('/');
+      notifyActions.push({
+        message: 'No wallet found',
+        dismissed: true,
+        options: {
+          variant: 'error',
+        },
+      });
     }
-    console.log('Wallet: ', userWallet);
-  }, [userWallet]);
+  }, [storedWallet]);
 
   return (
     <>

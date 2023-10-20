@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import DefaultIcon from '@mui/icons-material/Deblur';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import ThemeIcon from '@mui/icons-material/InvertColors';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Avatar, ButtonBase, Menu, MenuItem } from '@mui/material';
@@ -115,7 +114,7 @@ function Header() {
                 <ThemeIcon />
               </IconButton>
             </Tooltip>
-            {storedWallet !== '' && (
+            {storedWallet && (
               <>
                 <Divider orientation="vertical" flexItem />
                 <ButtonBase onClick={handleClickAvatar}>

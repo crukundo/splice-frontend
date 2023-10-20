@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { AlternateEmail, ArrowForward, QrCodeRounded, SendRounded } from '@mui/icons-material';
@@ -5,11 +6,27 @@ import { IconButton, List, ListItem, ListItemIcon, ListItemText } from '@mui/mat
 
 import Meta from '@/components/Meta';
 import { FullSizeAtopFlexBox } from '@/components/styled';
+import { storedWalletId } from '@/config';
 import useNotifications from '@/store/notifications';
 
 function Send() {
   const navigate = useNavigate();
   const [, notifyActions] = useNotifications();
+
+  const storedWallet = localStorage.getItem(storedWalletId);
+
+  useEffect(() => {
+    if (!storedWallet) {
+      navigate('/');
+      notifyActions.push({
+        message: 'No wallet found',
+        dismissed: true,
+        options: {
+          variant: 'error',
+        },
+      });
+    }
+  }, []);
 
   return (
     <>

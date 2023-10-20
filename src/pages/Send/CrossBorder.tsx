@@ -8,7 +8,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
   InputAdornment,
   LinearProgress,
   Stack,
@@ -17,7 +16,7 @@ import {
 
 import Meta from '@/components/Meta';
 import SpliceQrCode from '@/components/QRCode';
-import { FullSizeAtopFlexBox, FullSizeCenteredFlexBox } from '@/components/styled';
+import { FullSizeAtopFlexBox } from '@/components/styled';
 import useNotifications from '@/store/notifications';
 import sleep from '@/utils/sleep';
 

@@ -122,7 +122,7 @@ function Welcome() {
                       error={!isWalletIdValid}
                       helperText={
                         !isWalletIdValid
-                          ? 'Invalid wallet id'
+                          ? 'This ID is not valid. Paste or enter it again'
                           : 'Enter a valid wallet id e.g 766269c6-94f0-4d8b-82ee-7b53b416bc0f'
                       }
                       value={walletId}
