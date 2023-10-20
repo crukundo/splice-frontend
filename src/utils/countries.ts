@@ -5,6 +5,11 @@ export interface CountryType {
   currency?: string;
 }
 
+export const allowedCountries = [
+  { code: 'NG', label: 'Nigeria', phone: '234', currency: 'NGN' },
+  { code: 'KE', label: 'Kenya', phone: '254', currency: 'KES' },
+];
+
 export const countries = [
   { code: 'AO', label: 'Angola', phone: '244', currency: 'AOA' },
   { code: 'BF', label: 'Burkina Faso', phone: '226', currency: 'XOF' },

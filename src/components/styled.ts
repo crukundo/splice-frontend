@@ -10,9 +10,19 @@ const CenteredFlexBox = styled(FlexBox)({
   alignItems: 'center',
 });
 
+const ATopFlexBox = styled(FlexBox)({
+  justifyContent: 'center',
+  alignItems: 'start',
+});
+
 const FullSizeCenteredFlexBox = styled(CenteredFlexBox)({
   width: '100%',
   height: '100%',
 });
 
-export { FlexBox, CenteredFlexBox, FullSizeCenteredFlexBox };
+const FullSizeAtopFlexBox = styled(ATopFlexBox)({
+  width: '100%',
+  height: '100%',
+});
+
+export { FlexBox, CenteredFlexBox, FullSizeCenteredFlexBox, FullSizeAtopFlexBox };

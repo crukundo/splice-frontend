@@ -4,6 +4,13 @@ import { deepmerge } from '@mui/utils';
 import { Themes } from './types';
 
 const sharedTheme = {
+  typography: {
+    fontFamily: `"Inter", "Helvetica", "Arial", sans-serif`,
+    fontSize: 14,
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 500,
+  },
   palette: {
     background: {
       default: '#fafafa',
@@ -41,7 +48,7 @@ const themes: Record<Themes, ThemeOptions> = {
         paper: '#fff',
       },
       primary: {
-        main: '#3f51b5',
+        main: '#101928',
       },
     },
   }),

@@ -8,6 +8,8 @@ const email = 'support@splice.africa';
 
 const repository = 'https://github.com/splice-africa';
 
+const apiUrl = 'https://splice-africa-splice.koyeb.app/api';
+
 const messages = {
   app: {
     crash: {
@@ -62,4 +64,5 @@ export {
   title,
   defaultMetaTags,
   giphy404,
+  apiUrl,
 };

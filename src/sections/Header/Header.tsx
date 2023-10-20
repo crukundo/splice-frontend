@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import DefaultIcon from '@mui/icons-material/Deblur';
@@ -49,7 +50,7 @@ function Header() {
               {Object.values(routes)
                 .filter((route) => route.title)
                 .map(({ path, title, icon: Icon }) => (
-                  <>
+                  <Fragment key={path}>
                     <Button
                       key={path}
                       component={Link}
@@ -60,7 +61,7 @@ function Header() {
                       {title}
                     </Button>
                     <Divider orientation="vertical" flexItem />
-                  </>
+                  </Fragment>
                 ))}
             </FlexBox>
           )}

@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 import DefaultIcon from '@mui/icons-material/Deblur';
 import List from '@mui/material/List';
@@ -13,6 +14,7 @@ import useSidebar from '@/store/sidebar';
 
 function Sidebar() {
   const [isSidebarOpen, sidebarActions] = useSidebar();
+  const pathname = useLocation().pathname;
 
   return (
     <SwipeableDrawer
@@ -28,7 +30,12 @@ function Sidebar() {
           .filter((route) => route.title)
           .map(({ path, title, icon: Icon }) => (
             <ListItem sx={{ p: 0 }} key={path}>
-              <ListItemButton component={Link} to={path as string} onClick={sidebarActions.close}>
+              <ListItemButton
+                selected={path === pathname}
+                component={Link}
+                to={path as string}
+                onClick={sidebarActions.close}
+              >
                 <ListItemIcon>{Icon ? <Icon /> : <DefaultIcon />}</ListItemIcon>
                 <ListItemText>{title}</ListItemText>
               </ListItemButton>

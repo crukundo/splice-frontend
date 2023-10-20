@@ -1,4 +1,4 @@
-import { CallReceived, Home, ReceiptLong, Send, Wallet } from '@mui/icons-material';
+import { CallReceived, Code, ReceiptLong, Send, Wallet } from '@mui/icons-material';
 
 import asyncComponentLoader from '@/utils/loader';
 
@@ -8,17 +8,17 @@ const routes: Routes = {
   [Pages.Welcome]: {
     component: asyncComponentLoader(() => import('@/pages/Welcome')),
     path: '/',
-    title: 'Welcome',
-    icon: Home,
+    // title: 'Welcome',
+    // icon: Home,
   },
   [Pages.CreateNewWallet]: {
     component: asyncComponentLoader(() => import('@/pages/CreateWallet')),
     path: '/create',
   },
-  [Pages.Wallets]: {
-    component: asyncComponentLoader(() => import('@/pages/Wallets')),
-    path: '/wallets',
-    title: 'Wallets',
+  [Pages.Wallet]: {
+    component: asyncComponentLoader(() => import('@/pages/Wallet')),
+    path: '/wallet',
+    title: 'Wallet',
     icon: Wallet,
   },
   [Pages.Send]: {
@@ -27,17 +27,17 @@ const routes: Routes = {
     title: 'Send',
     icon: Send,
   },
+  [Pages.CrossBorder]: {
+    component: asyncComponentLoader(() => import('@/pages/Send/CrossBorder')),
+    path: '/send/cross',
+    // title: 'Cross Border Settlement',
+    // icon: Code,
+  },
   [Pages.Receive]: {
     component: asyncComponentLoader(() => import('@/pages/Receive')),
     path: '/receive',
     title: 'Receive',
     icon: CallReceived,
-  },
-  [Pages.Transactions]: {
-    component: asyncComponentLoader(() => import('@/pages/Transactions')),
-    path: '/transactions',
-    title: 'Transactions',
-    icon: ReceiptLong,
   },
   [Pages.NotFound]: {
     component: asyncComponentLoader(() => import('@/pages/NotFound')),
