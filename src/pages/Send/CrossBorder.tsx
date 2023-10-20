@@ -17,7 +17,7 @@ import {
 
 import Meta from '@/components/Meta';
 import SpliceQrCode from '@/components/QRCode';
-import { FullSizeCenteredFlexBox } from '@/components/styled';
+import { FullSizeAtopFlexBox, FullSizeCenteredFlexBox } from '@/components/styled';
 import useNotifications from '@/store/notifications';
 import sleep from '@/utils/sleep';
 
@@ -26,7 +26,7 @@ function CrossBorder() {
   const [remoteLnAddress, setRemoteLnAddress] = React.useState('');
   const [isAddressValid, setIsAddressValid] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
-  const [response, setResponse] = React.useState(null);
+  const [invoiceResponse, setInvoiceResponse] = React.useState(null);
   const [isConfirmationOpen, setIsConfirmationOpen] = React.useState(false);
   const [, notifyActions] = useNotifications();
 
@@ -86,10 +86,9 @@ function CrossBorder() {
   return (
     <>
       <Meta title="Cross Border Payment" />
-      <FullSizeCenteredFlexBox>
+      <FullSizeAtopFlexBox>
         <Box>
           <Stack spacing={2} sx={{ mt: 5 }}>
-            <Divider />
             <TextField
               required
               id="send-amount"
@@ -136,19 +135,23 @@ function CrossBorder() {
             >
               Request invoice
             </Button>
-            <SpliceQrCode
-              // all this meta data comes from api reponse from request invoice.
-              invoice="lntb1m1pjny53cpp5rm6kpu53g2uck4hzv4k34z5aly0afyqyu2t099px6u9xflkxlmzqdqqcqzzsxqyz5vqsp5lt59vtna3v3yewasnfuxs2cq7zxykwr8etv6g335zfq62lzfzyxs9qyyssqny76gfv4cp28fyeytu4zrdd4xfj2kpp5zvyhxstyqhfyr9667vgsyhxc2ta75nmvw5e4myl0kwq5pkau9m4390xccj5r4l88ngvsjqgpqz9cw8"
-              amount={sendAmount}
-              currency="NGN"
-              size={250}
-            />
-            <Button variant="contained" onClick={handlePayInvoice} size="large">
-              Pay with wallet
-            </Button>
-            <Button variant="text" onClick={handleCopyInvoice}>
-              Copy invoice
-            </Button>
+            {invoiceResponse && (
+              <Stack spacing={2}>
+                <SpliceQrCode
+                  // all this meta data comes from api reponse from request invoice.
+                  invoice="lntb1m1pjny53cpp5rm6kpu53g2uck4hzv4k34z5aly0afyqyu2t099px6u9xflkxlmzqdqqcqzzsxqyz5vqsp5lt59vtna3v3yewasnfuxs2cq7zxykwr8etv6g335zfq62lzfzyxs9qyyssqny76gfv4cp28fyeytu4zrdd4xfj2kpp5zvyhxstyqhfyr9667vgsyhxc2ta75nmvw5e4myl0kwq5pkau9m4390xccj5r4l88ngvsjqgpqz9cw8"
+                  amount={sendAmount}
+                  currency="NGN"
+                  size={250}
+                />
+                <Button variant="contained" onClick={handlePayInvoice} size="large">
+                  Pay with wallet
+                </Button>
+                <Button variant="text" onClick={handleCopyInvoice}>
+                  Copy invoice
+                </Button>
+              </Stack>
+            )}
           </Stack>
           {/* Confirmation Dialog */}
           <Dialog open={isConfirmationOpen} onClose={handleConfirmationClose} maxWidth={'sm'}>
@@ -168,7 +171,7 @@ function CrossBorder() {
             </DialogActions>
           </Dialog>
         </Box>
-      </FullSizeCenteredFlexBox>
+      </FullSizeAtopFlexBox>
     </>
   );
 }

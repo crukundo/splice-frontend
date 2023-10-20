@@ -29,9 +29,6 @@ function Wallet() {
 
   const WalletBalanceCard = () => {
     const balances = userWallet?.balances;
-    if (!balances) {
-      return;
-    }
 
     const AvatarIcon = (currency: string) => {
       if (currency === 'BTC') {
@@ -47,7 +44,7 @@ function Wallet() {
 
     return (
       <List sx={{ width: '100%', maxWidth: 600 }} subheader="Wallet & balances">
-        {balances.map(({ amount, currency }: BalanceProps, index: number) => (
+        {balances?.map(({ amount, currency }: BalanceProps, index: number) => (
           <ListItem key={index} sx={{ bgcolor: 'background.paper' }} divider={true}>
             <ListItemAvatar>{AvatarIcon(currency)}</ListItemAvatar>
             <ListItemText primary={amount} secondary={currency} />
