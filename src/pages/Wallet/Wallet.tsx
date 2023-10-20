@@ -1,14 +1,22 @@
 import React, { useEffect } from 'react';
 
+import { CurrencyBitcoin } from '@mui/icons-material';
 import {
+  Avatar,
   Box,
   Card,
   CardContent,
   CircularProgress,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
   Skeleton,
   Stack,
   Typography,
 } from '@mui/material';
+
+import { BitcoinIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
 import Meta from '@/components/Meta';
 import { FullSizeAtopFlexBox } from '@/components/styled';
@@ -24,17 +32,28 @@ function Wallet() {
     if (!balances) {
       return;
     }
+
+    const AvatarIcon = (currency: string) => {
+      if (currency === 'BTC') {
+        return (
+          <Avatar sx={{ bgcolor: '#fff' }}>
+            <BitcoinIcon style={{ height: '40px', width: '40px', color: '#F7931A' }} />
+          </Avatar>
+        );
+      } else {
+        return <Avatar src={`https://flagcdn.com/w40/ke.png`} />;
+      }
+    };
+
     return (
-      <>
+      <List sx={{ width: '100%', maxWidth: 600 }} subheader="Wallet & balances">
         {balances.map(({ amount, currency }: BalanceProps, index: number) => (
-          <Card variant="outlined" sx={{ mb: 2 }} key={index}>
-            <CardContent>
-              <Typography variant="h5">{amount}</Typography>
-              <Typography variant="h6">{currency}</Typography>
-            </CardContent>
-          </Card>
+          <ListItem key={index} sx={{ bgcolor: 'background.paper' }} divider={true}>
+            <ListItemAvatar>{AvatarIcon(currency)}</ListItemAvatar>
+            <ListItemText primary={amount} secondary={currency} />
+          </ListItem>
         ))}
-      </>
+      </List>
     );
   };
 
@@ -87,17 +106,15 @@ function Wallet() {
       <Meta title="Wallet" />
       <FullSizeAtopFlexBox>
         <Box width={480}>
-          <Stack spacing={2} sx={{ m: 2 }}>
-            <Typography variant="h5" component="h1" align="center">
-              {loading ? (
-                <Stack spacing={2} sx={{ p: 2 }}>
-                  <Skeleton variant="rectangular" width={380} height={104} />
-                  <Skeleton variant="rounded" width={380} height={104} />
-                </Stack>
-              ) : (
-                <WalletBalanceCard />
-              )}
-            </Typography>
+          <Stack spacing={2} sx={{ p: 1 }}>
+            {loading ? (
+              <Stack spacing={2}>
+                <Skeleton variant="rectangular" width={380} height={104} />
+                <Skeleton variant="rounded" width={380} height={104} />
+              </Stack>
+            ) : (
+              <WalletBalanceCard />
+            )}
           </Stack>
         </Box>
       </FullSizeAtopFlexBox>
