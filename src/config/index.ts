@@ -11,6 +11,9 @@ const repository = 'https://github.com/splice-africa';
 const apiUrl = 'https://splice-africa-splice.koyeb.app/api';
 
 const storedWalletId = 'splice-wallet-id';
+const storedFiatCurrency = 'splice-fiat';
+const storedLnAddress = 'splice-ln-url';
+const storedWithdrawFee = 'splice-withdraw-fee';
 
 const messages = {
   app: {
@@ -68,4 +71,7 @@ export {
   giphy404,
   apiUrl,
   storedWalletId,
+  storedFiatCurrency,
+  storedLnAddress,
+  storedWithdrawFee,
 };

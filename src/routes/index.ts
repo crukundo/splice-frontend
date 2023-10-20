@@ -1,4 +1,4 @@
-import { CallReceived, Code, ReceiptLong, Send, Wallet } from '@mui/icons-material';
+import { CallReceived, Send, Wallet } from '@mui/icons-material';
 
 import asyncComponentLoader from '@/utils/loader';
 

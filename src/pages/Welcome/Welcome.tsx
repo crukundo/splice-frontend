@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 
 import Meta from '@/components/Meta';
 import { FullSizeAtopFlexBox } from '@/components/styled';
-import { apiUrl, storedWalletId } from '@/config';
+import { apiUrl, storedLnAddress, storedWalletId, storedWithdrawFee } from '@/config';
 import { WalletRequestResponse } from '@/utils/interfaces';
 
 function Welcome() {
@@ -66,6 +66,8 @@ function Welcome() {
       // if exists, set in localStorage, and go to wallet page.
       if (isWallet) {
         localStorage.setItem(storedWalletId, walletId);
+        localStorage.setItem(storedLnAddress, isWallet.lightning_address);
+        localStorage.setItem(storedWithdrawFee, isWallet.withdrawal_fee.toString());
         setLoading(false);
         navigate('/wallet');
       } else {

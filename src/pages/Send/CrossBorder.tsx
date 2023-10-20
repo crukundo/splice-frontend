@@ -4,22 +4,17 @@ import { BoltSharp } from '@mui/icons-material';
 import {
   Box,
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Divider,
   InputAdornment,
   LinearProgress,
-  Paper,
   Stack,
   TextField,
-  Typography,
 } from '@mui/material';
 
-import Loading from '@/components/Loading';
 import Meta from '@/components/Meta';
 import SpliceQrCode from '@/components/QRCode';
 import { FullSizeCenteredFlexBox } from '@/components/styled';
