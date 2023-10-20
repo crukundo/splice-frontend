@@ -111,7 +111,6 @@ function CreateNewWallet() {
             {/* <Typography component="h1" variant="h5" align="center">
               Lets setup your account
             </Typography> */}
-            <Divider />
             <Autocomplete
               disabled={loading}
               sx={{ pb: 2 }}
