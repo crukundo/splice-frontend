@@ -5,6 +5,7 @@ import DefaultIcon from '@mui/icons-material/Deblur';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import ThemeIcon from '@mui/icons-material/InvertColors';
 import MenuIcon from '@mui/icons-material/Menu';
+import { Avatar } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -14,7 +15,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 
 import { FlexBox } from '@/components/styled';
-import { repository, title } from '@/config';
+import { storedWalletId, title } from '@/config';
 import useOrientation from '@/hooks/useOrientation';
 import routes from '@/routes';
 import useSidebar from '@/store/sidebar';
@@ -24,6 +25,8 @@ function Header() {
   const [, sidebarActions] = useSidebar();
   const [, themeActions] = useTheme();
   const isPortrait = useOrientation();
+
+  const storedWallet = localStorage.getItem(storedWalletId);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -66,18 +69,23 @@ function Header() {
             </FlexBox>
           )}
           <FlexBox>
-            <Divider orientation="vertical" flexItem />
-            <Tooltip title="It's open source" arrow>
-              <IconButton color="info" size="large" component="a" href={repository} target="_blank">
-                <GitHubIcon />
-              </IconButton>
-            </Tooltip>
-            <Divider orientation="vertical" flexItem />
+            <Divider orientation="vertical" />
             <Tooltip title="Switch theme" arrow>
-              <IconButton color="info" edge="end" size="large" onClick={themeActions.toggle}>
+              <IconButton color="info" edge="start" size="large" onClick={themeActions.toggle}>
                 <ThemeIcon />
               </IconButton>
             </Tooltip>
+            {storedWallet !== '' && (
+              <>
+                <Divider orientation="vertical" flexItem />
+                <Tooltip title={storedWallet} arrow>
+                  <Avatar
+                    src="/broken-image.jpg"
+                    sx={{ width: 30, height: 30, alignSelf: 'center' }}
+                  />
+                </Tooltip>
+              </>
+            )}
           </FlexBox>
         </Toolbar>
       </AppBar>

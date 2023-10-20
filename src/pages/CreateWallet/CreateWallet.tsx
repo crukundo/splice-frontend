@@ -8,6 +8,7 @@ import {
   Button,
   Divider,
   InputAdornment,
+  LinearProgress,
   Snackbar,
   Stack,
   TextField,
@@ -17,7 +18,7 @@ import {
 import { MuiTelInput, MuiTelInputCountry, matchIsValidTel } from 'mui-tel-input';
 
 import Meta from '@/components/Meta';
-import { FullSizeAtopFlexBox, FullSizeCenteredFlexBox } from '@/components/styled';
+import { FullSizeAtopFlexBox } from '@/components/styled';
 import { apiUrl } from '@/config';
 import { CountryType, allowedCountries } from '@/utils/countries';
 
@@ -28,6 +29,7 @@ function CreateNewWallet() {
   const [errorMsg, setErrorMsg] = React.useState(null);
   const [openAlert, setOpenAlert] = React.useState(false);
   const [isValidMobile, setIsValidMobile] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   <Snackbar open={openAlert} autoHideDuration={6000} onClose={() => setOpenAlert(false)}>
     <Alert severity="error">
@@ -65,11 +67,14 @@ function CreateNewWallet() {
   }
 
   const onPressContinue = async (): Promise<CreateWalletResponse> => {
+    setLoading(true);
     const payload: CreateWalletRequestBody = {
       phoneNumber: mobileNumber,
       withdrawalFee: withdrawFee,
       preferredFiatCurrency: selectedCountry?.currency || 'NGN',
     };
+
+    let createWalletRes;
     try {
       const response = await fetch(`${apiUrl}/wallets`, {
         method: 'POST',
@@ -85,15 +90,16 @@ function CreateNewWallet() {
       }
 
       // Assuming the response is JSON; modify accordingly if it's different
-      const responseData = await response.json();
-
-      // Customize the response structure based on your API's response
-      return responseData;
+      createWalletRes = await response.json();
+      setLoading(false);
     } catch (error: any) {
       setErrorMsg(error.message);
       setOpenAlert(true);
-      throw new Error('Failed to create wallet');
     }
+
+    console.log('createWalletRes: ', createWalletRes);
+
+    return createWalletRes;
   };
 
   return (
@@ -102,11 +108,12 @@ function CreateNewWallet() {
       <FullSizeAtopFlexBox>
         <Box width={480}>
           <Stack spacing={2} sx={{ p: 2 }}>
-            <Typography component="h1" variant="h5" align="center">
+            {/* <Typography component="h1" variant="h5" align="center">
               Lets setup your account
-            </Typography>
+            </Typography> */}
             <Divider />
             <Autocomplete
+              disabled={loading}
               sx={{ pb: 2 }}
               id="country-selector"
               options={allowedCountries}
@@ -156,6 +163,7 @@ function CreateNewWallet() {
                     ? 'Invalid mobile number'
                     : 'We will use this to create a lightning address'
                 }
+                disabled={loading}
               />
             )}
             {mobileNumber && (
@@ -172,13 +180,15 @@ function CreateNewWallet() {
                   ),
                 }}
                 helperText={`Fixed service fee you will charge users to withdraw BTC in ${selectedCountry?.currency}?`}
+                disabled={loading}
               />
             )}
+            {loading ? <LinearProgress /> : null}
             <Button
               variant="contained"
               onClick={onPressContinue}
               size="large"
-              disabled={!mobileNumber || !selectedCountry || !withdrawFee}
+              disabled={loading || !mobileNumber || !selectedCountry || !withdrawFee}
             >
               Continue
             </Button>

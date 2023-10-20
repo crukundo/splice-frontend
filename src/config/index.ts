@@ -10,6 +10,8 @@ const repository = 'https://github.com/splice-africa';
 
 const apiUrl = 'https://splice-africa-splice.koyeb.app/api';
 
+const storedWalletId = 'splice-wallet-id';
+
 const messages = {
   app: {
     crash: {
@@ -65,4 +67,5 @@ export {
   defaultMetaTags,
   giphy404,
   apiUrl,
+  storedWalletId,
 };

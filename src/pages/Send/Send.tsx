@@ -1,32 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 
-import {
-  AlternateEmail,
-  ArrowForward,
-  EmailRounded,
-  Image,
-  QrCodeRounded,
-  SendRounded,
-} from '@mui/icons-material';
-import {
-  Avatar,
-  IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
+import { AlternateEmail, ArrowForward, QrCodeRounded, SendRounded } from '@mui/icons-material';
+import { IconButton, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 
 import Meta from '@/components/Meta';
-import { FullSizeCenteredFlexBox } from '@/components/styled';
+import { FullSizeAtopFlexBox } from '@/components/styled';
 
 function Send() {
   const navigate = useNavigate();
   return (
     <>
       <Meta title="Send money" />
-      <FullSizeCenteredFlexBox>
+      <FullSizeAtopFlexBox>
         <List sx={{ width: '100%', maxWidth: 600 }} component="nav">
           <ListItem
             sx={{ bgcolor: 'background.paper' }}
@@ -83,7 +68,7 @@ function Send() {
             />
           </ListItem>
         </List>
-      </FullSizeCenteredFlexBox>
+      </FullSizeAtopFlexBox>
     </>
   );
 }

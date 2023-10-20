@@ -94,9 +94,6 @@ function CrossBorder() {
       <FullSizeCenteredFlexBox>
         <Box>
           <Stack spacing={2} sx={{ mt: 5 }}>
-            <Typography variant="h5" component="h1" align="center">
-              Cross Border Payment
-            </Typography>
             <Divider />
             <TextField
               required

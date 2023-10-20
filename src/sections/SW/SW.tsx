@@ -37,7 +37,7 @@ function SW() {
       });
     } else if (needRefresh) {
       notificationKey.current = notificationsActions.push({
-        message: 'New content is available, click on reload button to update.',
+        message: 'Splice was just updated! Hit reload',
         options: {
           variant: 'warning',
           persist: true,
