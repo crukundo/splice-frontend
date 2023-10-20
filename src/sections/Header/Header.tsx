@@ -57,13 +57,20 @@ function Header() {
   const handleLogout = async () => {
     await sleep(1000);
     localStorage.clear();
+    notifyActions.push({
+      message: 'Logged out successfully.',
+      dismissed: true,
+      options: {
+        variant: 'info',
+      },
+    });
     await sleep(1000);
     navigate('/');
   };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar color="transparent" elevation={1} position="static">
+      <AppBar color="transparent" elevation={0} position="static">
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <FlexBox sx={{ alignItems: 'center' }}>
             <IconButton

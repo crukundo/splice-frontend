@@ -5,9 +5,12 @@ import { IconButton, List, ListItem, ListItemIcon, ListItemText } from '@mui/mat
 
 import Meta from '@/components/Meta';
 import { FullSizeAtopFlexBox } from '@/components/styled';
+import useNotifications from '@/store/notifications';
 
 function Send() {
   const navigate = useNavigate();
+  const [, notifyActions] = useNotifications();
+
   return (
     <>
       <Meta title="Send money" />
@@ -39,7 +42,15 @@ function Send() {
                 <ArrowForward />
               </IconButton>
             }
-            onClick={() => navigate('/send-lnurl')}
+            onClick={() => {
+              notifyActions.push({
+                message: 'Coming soon',
+                dismissed: true,
+                options: {
+                  variant: 'info',
+                },
+              });
+            }}
           >
             <ListItemIcon>
               <AlternateEmail />
@@ -57,7 +68,15 @@ function Send() {
                 <ArrowForward />
               </IconButton>
             }
-            onClick={() => navigate('/send-invoice')}
+            onClick={() => {
+              notifyActions.push({
+                message: 'Coming soon',
+                dismissed: true,
+                options: {
+                  variant: 'info',
+                },
+              });
+            }}
           >
             <ListItemIcon>
               <QrCodeRounded />
