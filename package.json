@@ -29,6 +29,7 @@
     "@mui/system": "^5.10.6",
     "@mui/utils": "^5.10.6",
     "is-mobile": "^3.1.1",
+    "lottie-react": "^2.4.0",
     "mui-tel-input": "^4.0.1",
     "notistack": "^3.0.1",
     "react": "^18.2.0",

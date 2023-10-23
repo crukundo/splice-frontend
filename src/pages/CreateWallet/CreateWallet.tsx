@@ -1,42 +1,52 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
-  Alert,
-  AlertTitle,
   Autocomplete,
   Box,
   Button,
-  Divider,
   InputAdornment,
   LinearProgress,
-  Snackbar,
   Stack,
   TextField,
-  Typography,
 } from '@mui/material';
 
 import { MuiTelInput, MuiTelInputCountry, matchIsValidTel } from 'mui-tel-input';
 
 import Meta from '@/components/Meta';
 import { FullSizeAtopFlexBox } from '@/components/styled';
-import { apiUrl } from '@/config';
+import {
+  apiUrl,
+  storedFiatCurrency,
+  storedLnAddress,
+  storedWalletId,
+  storedWithdrawFee,
+} from '@/config';
 import { CountryType, allowedCountries } from '@/utils/countries';
+import { CreateWalletRequestBody } from '@/utils/interfaces';
 
 function CreateNewWallet() {
   const [mobileNumber, setMobileNumber] = React.useState('');
   const [withdrawFee, setWithdrawFee] = React.useState(0);
   const [selectedCountry, setSelectedCountry] = React.useState<CountryType | null>(null);
-  const [errorMsg, setErrorMsg] = React.useState(null);
-  const [openAlert, setOpenAlert] = React.useState(false);
   const [isValidMobile, setIsValidMobile] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const navigate = useNavigate();
 
-  <Snackbar open={openAlert} autoHideDuration={6000} onClose={() => setOpenAlert(false)}>
-    <Alert severity="error">
-      <AlertTitle>Error</AlertTitle>
-      {errorMsg}
-    </Alert>
-  </Snackbar>;
+  const formatPhoneNumber = (
+    phoneNumber: string | undefined,
+    countryCode: string | undefined,
+  ): string => {
+    // Remove white spaces
+    phoneNumber = phoneNumber?.replace(/\s/g, '');
+
+    // Remove the country code and add '0' before '7'
+    if (phoneNumber?.startsWith(`+${countryCode}`)) {
+      phoneNumber = phoneNumber.replace(`+${countryCode}`, '0');
+    }
+
+    return phoneNumber as string;
+  };
 
   const handleMobileNumber = (newNumber: string) => {
     setMobileNumber(newNumber);
@@ -52,29 +62,15 @@ function CreateNewWallet() {
     setWithdrawFee(inputFee);
   };
 
-  interface CreateWalletRequestBody {
-    phoneNumber: string;
-    withdrawalFee: number;
-    preferredFiatCurrency: string;
-  }
-
-  interface CreateWalletResponse {
-    id: string;
-    lightning_address: string;
-    withdrawal_fee: number;
-    balances: [];
-    success: boolean;
-  }
-
-  const onPressContinue = async (): Promise<CreateWalletResponse> => {
+  const onPressContinue = async () => {
     setLoading(true);
+    const formattedNumber = formatPhoneNumber(mobileNumber, selectedCountry?.phone);
     const payload: CreateWalletRequestBody = {
-      phoneNumber: mobileNumber,
+      phoneNumber: formattedNumber,
       withdrawalFee: withdrawFee,
-      preferredFiatCurrency: selectedCountry?.currency || 'NGN',
+      preferredFiatCurrency: selectedCountry?.currency || '', // @todo handle undefined better
     };
 
-    let createWalletRes;
     try {
       const response = await fetch(`${apiUrl}/wallets`, {
         method: 'POST',
@@ -89,17 +85,18 @@ function CreateNewWallet() {
         throw new Error('Failed to create wallet');
       }
 
-      // Assuming the response is JSON; modify accordingly if it's different
-      createWalletRes = await response.json();
+      await response.json().then((data) => {
+        console.log('createWalletRes: ', data);
+        localStorage.setItem(storedWalletId, data.id);
+        localStorage.setItem(storedLnAddress, data.lightning_address);
+        localStorage.setItem(storedWithdrawFee, data.withdrawal_fee.toString());
+        localStorage.setItem(storedFiatCurrency, data.balances[0].currency);
+      });
       setLoading(false);
+      navigate('/wallet');
     } catch (error: any) {
-      setErrorMsg(error.message);
-      setOpenAlert(true);
+      console.log('Error creating wallet: ', error.message);
     }
-
-    console.log('createWalletRes: ', createWalletRes);
-
-    return createWalletRes;
   };
 
   return (

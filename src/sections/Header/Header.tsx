@@ -119,7 +119,7 @@ function Header() {
                 <Divider orientation="vertical" flexItem />
                 <ButtonBase onClick={handleClickAvatar}>
                   <Avatar
-                    src="/broken-image.jpg"
+                    src={`https://robohash.org/${storedWalletId}`}
                     sx={{ width: 30, height: 30, alignSelf: 'center' }}
                   />
                 </ButtonBase>

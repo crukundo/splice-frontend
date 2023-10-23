@@ -4,6 +4,9 @@ import { BoltSharp } from '@mui/icons-material';
 import {
   Box,
   Button,
+  Card,
+  CardActions,
+  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,20 +15,32 @@ import {
   LinearProgress,
   Stack,
   TextField,
+  Typography,
 } from '@mui/material';
+
+import Lottie from 'lottie-react';
 
 import Meta from '@/components/Meta';
 import SpliceQrCode from '@/components/QRCode';
 import { FullSizeAtopFlexBox } from '@/components/styled';
+import { apiUrl, storedFiatCurrency, storedLnAddress, storedWalletId } from '@/config';
 import useNotifications from '@/store/notifications';
-import sleep from '@/utils/sleep';
+import {
+  CreateInvoiceRequestBody,
+  CreateInvoiceResponse,
+  PayInvoiceRequestBody,
+  PayInvoiceResponse,
+} from '@/utils/interfaces';
+
+import successfulTransaction from '../../lottie/success-transaction.json';
 
 function CrossBorder() {
   const [sendAmount, setSendAmount] = React.useState(0);
   const [remoteLnAddress, setRemoteLnAddress] = React.useState('');
   const [isAddressValid, setIsAddressValid] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
-  const [invoiceResponse, setInvoiceResponse] = React.useState(null);
+  const [invoiceResponse, setInvoiceResponse] = React.useState<CreateInvoiceResponse | null>(null);
+  const [payResponse, setPayResponse] = React.useState<PayInvoiceResponse | null>(null);
   const [isConfirmationOpen, setIsConfirmationOpen] = React.useState(false);
   const [, notifyActions] = useNotifications();
 
@@ -49,11 +64,40 @@ function CrossBorder() {
     setSendAmount(inputAmount);
   };
 
+  const localWalletId = localStorage.getItem(storedWalletId);
+
   const handleRequestInvoice = async () => {
     setIsConfirmationOpen(false);
     setLoading(true);
-    await sleep(5000);
-    setLoading(false);
+    const payload: CreateInvoiceRequestBody = {
+      walletId: localWalletId!,
+      destionationAddress: remoteLnAddress,
+      amount: sendAmount,
+      currency: 'NGN',
+    };
+
+    try {
+      const response = await fetch(`${apiUrl}/invoices`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        // @todo: show as an alert or notification
+        throw new Error('Failed to generate invoice');
+      }
+
+      await response.json().then((data) => {
+        console.log('createInvoiceRes: ', data);
+        setInvoiceResponse(data);
+      });
+      setLoading(false);
+    } catch (error: any) {
+      console.log('Error creating wallet: ', error.message);
+    }
   };
 
   const handleConfirmationPress = () => {
@@ -64,9 +108,11 @@ function CrossBorder() {
     setIsConfirmationOpen(false);
   };
 
+  const fiatCurrency = localStorage.getItem(storedFiatCurrency);
+
   const handleCopyInvoice = () => {
-    // Copy the QR string to the clipboard
-    navigator.clipboard.writeText('invoice from api response');
+    // @ts-ignore
+    navigator.clipboard.writeText(invoiceResponse?.invoice);
     notifyActions.push({
       message: 'Invoice copied to clipboard',
       dismissed: true,
@@ -76,10 +122,52 @@ function CrossBorder() {
     });
   };
 
+  const handleCopyProof = () => {
+    // @ts-ignore
+    navigator.clipboard.writeText(payResponse?.proofOfPayment);
+    notifyActions.push({
+      message: 'Proof of payment copied to clipboard',
+      dismissed: true,
+      options: {
+        variant: 'info',
+      },
+    });
+  };
+
+  const localLnAddress = localStorage.getItem(storedLnAddress);
+
   const handlePayInvoice = async () => {
     setLoading(true);
-    await sleep(5000);
-    setLoading(false);
+    const payload: PayInvoiceRequestBody = {
+      sourceAddress: localLnAddress!,
+      amount: invoiceResponse?.amount,
+      currency: invoiceResponse?.currency,
+      destinationAddress: remoteLnAddress,
+      tapdAddress: invoiceResponse?.invoice,
+    };
+
+    try {
+      const response = await fetch(`${apiUrl}/invoices/send`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        // @todo: show as an alert or notification
+        throw new Error('Failed to generate invoice');
+      }
+
+      await response.json().then((data) => {
+        console.log('payInvoiceRes: ', data);
+        setPayResponse(data);
+      });
+      setLoading(false);
+    } catch (error: any) {
+      console.log('Error creating wallet: ', error.message);
+    }
   };
 
   return (
@@ -96,9 +184,7 @@ function CrossBorder() {
               onChange={handleAmount}
               value={sendAmount}
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">{`{{ currency }}`}</InputAdornment>
-                ),
+                startAdornment: <InputAdornment position="start">{fiatCurrency}</InputAdornment>,
               }}
               disabled={loading}
             />
@@ -130,17 +216,17 @@ function CrossBorder() {
               variant="contained"
               onClick={handleConfirmationPress}
               size="large"
-              disabled={loading || !sendAmount || !remoteLnAddress}
+              disabled={loading || !sendAmount || !remoteLnAddress || !!invoiceResponse}
             >
               Request invoice
             </Button>
-            {invoiceResponse && (
+            {invoiceResponse && payResponse === null && (
               <Stack spacing={2}>
                 <SpliceQrCode
                   // all this meta data comes from api reponse from request invoice.
-                  invoice="lntb1m1pjny53cpp5rm6kpu53g2uck4hzv4k34z5aly0afyqyu2t099px6u9xflkxlmzqdqqcqzzsxqyz5vqsp5lt59vtna3v3yewasnfuxs2cq7zxykwr8etv6g335zfq62lzfzyxs9qyyssqny76gfv4cp28fyeytu4zrdd4xfj2kpp5zvyhxstyqhfyr9667vgsyhxc2ta75nmvw5e4myl0kwq5pkau9m4390xccj5r4l88ngvsjqgpqz9cw8"
-                  amount={sendAmount}
-                  currency="NGN"
+                  invoice={invoiceResponse.invoice}
+                  amount={invoiceResponse.amount}
+                  currency={invoiceResponse.currency}
                   size={250}
                 />
                 <Button variant="contained" onClick={handlePayInvoice} size="large">
@@ -151,13 +237,50 @@ function CrossBorder() {
                 </Button>
               </Stack>
             )}
+            {payResponse && (
+              <Box
+                sx={{
+                  width: 480,
+                  maxWidth: '100%',
+                }}
+              >
+                <Stack spacing={3}>
+                  <Lottie
+                    animationData={successfulTransaction}
+                    loop={false}
+                    style={{ height: 250 }}
+                  />
+                  <Card>
+                    <CardContent>
+                      <TextField value={payResponse.proofOfPayment} fullWidth />
+                    </CardContent>
+                    <CardActions>
+                      <Button onClick={handleCopyProof} variant="text" size="small">
+                        Copy proof
+                      </Button>
+                    </CardActions>
+                  </Card>
+                  <Button
+                    onClick={() => {
+                      setInvoiceResponse(null);
+                      setPayResponse(null);
+                    }}
+                    color="primary"
+                    size="large"
+                    variant="contained"
+                  >
+                    Done
+                  </Button>
+                </Stack>
+              </Box>
+            )}
           </Stack>
           {/* Confirmation Dialog */}
           <Dialog open={isConfirmationOpen} onClose={handleConfirmationClose} maxWidth={'sm'}>
             <DialogTitle>Review your request:</DialogTitle>
             <DialogContent>
               <div>
-                {`You would like to send ${sendAmount} {{local currency }} to ${remoteLnAddress}. Is this correct?`}
+                {`You would like to send ${sendAmount.toLocaleString()} ${fiatCurrency} to ${remoteLnAddress}. Is this correct?`}
               </div>
             </DialogContent>
             <DialogActions>
