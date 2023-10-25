@@ -48,7 +48,7 @@ const themes: Record<Themes, ThemeOptions> = {
         paper: '#fff',
       },
       primary: {
-        main: '#101928',
+        main: '#E8562E',
       },
     },
   }),

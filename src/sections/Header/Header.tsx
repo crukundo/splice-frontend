@@ -69,7 +69,7 @@ function Header() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar color="transparent" elevation={0} position="static">
+      <AppBar color="transparent" elevation={3} position="static">
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <FlexBox sx={{ alignItems: 'center' }}>
             <IconButton
@@ -119,7 +119,7 @@ function Header() {
                 <Divider orientation="vertical" flexItem />
                 <ButtonBase onClick={handleClickAvatar}>
                   <Avatar
-                    src={`https://robohash.org/${storedWalletId}`}
+                    src={`https://robohash.org/${storedWallet}`}
                     sx={{ width: 30, height: 30, alignSelf: 'center' }}
                   />
                 </ButtonBase>

@@ -8,7 +8,7 @@ const email = 'support@splice.africa';
 
 const repository = 'https://github.com/splice-africa';
 
-const apiUrl = 'http://143.110.248.134:8000/api';
+const apiUrl = 'https://splice.africa/api';
 
 const storedWalletId = 'splice-wallet-id';
 const storedFiatCurrency = 'splice-fiat';

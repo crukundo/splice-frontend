@@ -100,7 +100,7 @@ function Welcome() {
             </Stack>
             {!storedWallet && (
               <Stack spacing={2} sx={{ mt: 5 }}>
-                <Button variant="contained" onClick={onPressNew}>
+                <Button variant="contained" onClick={onPressNew} size="large">
                   Create a new wallet
                 </Button>
                 <Divider>OR</Divider>
