@@ -2,36 +2,15 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { CurrencyExchange } from '@mui/icons-material';
-import {
-  Avatar,
-  Box,
-  Chip,
-  Grid,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Paper,
-  Skeleton,
-  Stack,
-  Typography,
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Avatar, Box, Grid, Paper, Skeleton, Stack, Typography } from '@mui/material';
 
 import { BitcoinIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
 import Meta from '@/components/Meta';
 import { FullSizeAtopFlexBox } from '@/components/styled';
-import { apiUrl, storedFiatCurrency, storedWalletId } from '@/config';
+import { apiUrl, storedWalletId } from '@/config';
 import useNotifications from '@/store/notifications';
 import { BalanceProps, WalletRequestResponse } from '@/utils/interfaces';
-
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#f2f2f2',
-  ...theme.typography.h5,
-  padding: theme.spacing(1),
-  color: theme.palette.text.primary,
-}));
 
 function Wallet() {
   const navigate = useNavigate();
@@ -96,7 +75,7 @@ function Wallet() {
               maxWidth: 500,
               flexGrow: 1,
               backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#1A2027' : '#fff'),
-              borderRadius: 2,
+              borderRadius: 3,
             }}
           >
             <Grid container spacing={2}>
@@ -160,20 +139,20 @@ function Wallet() {
 
   return (
     <>
-      <Meta title="Wallet" />
+      <Meta title="Wallet &amp; Transactions" />
       <FullSizeAtopFlexBox>
-        <Box width={480}>
+        <Box width={480} sx={{ px: 2 }}>
           <Stack spacing={2}>
             <Typography sx={{ pt: 2 }} variant="h5">
               Wallets
             </Typography>
             {loading ? (
-              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                <Grid xs={6}>
-                  <Skeleton variant="rectangular" height={50} />
+              <Grid container rowSpacing={2}>
+                <Grid item xs={12}>
+                  <Skeleton variant="rectangular" height={80} sx={{ borderRadius: 3 }} />
                 </Grid>
-                <Grid xs={6}>
-                  <Skeleton variant="rectangular" height={50} />
+                <Grid item xs={12}>
+                  <Skeleton variant="rectangular" height={80} sx={{ borderRadius: 3 }} />
                 </Grid>
               </Grid>
             ) : (
