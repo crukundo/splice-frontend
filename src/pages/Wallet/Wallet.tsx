@@ -168,7 +168,7 @@ function Wallet() {
                       variant="contained"
                       fullWidth
                       onClick={() => {
-                        navigate('/ramp');
+                        navigate('/buy-btc');
                       }}
                     >
                       Buy Bitcoin
@@ -179,7 +179,7 @@ function Wallet() {
                       variant="outlined"
                       fullWidth
                       onClick={() => {
-                        navigate('/ramp');
+                        navigate('/sell-btc');
                       }}
                     >
                       Sell Bitcoin
