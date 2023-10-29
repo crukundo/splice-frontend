@@ -1,7 +1,15 @@
 import { useState } from 'react';
 
 import { CopyAll, Share } from '@mui/icons-material';
-import { Box, Button, InputAdornment, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  InputAdornment,
+  LinearProgress,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 import Meta from '@/components/Meta';
 import SpliceQrCode from '@/components/QRCode';
@@ -82,8 +90,8 @@ function CreateInvoice() {
     <>
       <Meta title="Create an invoice" />
       <FullSizeAtopFlexBox>
-        <Box width={480}>
-          <Stack spacing={3} sx={{ mt: 3 }}>
+        <Box width={480} sx={{ mt: 3, px: 2, pb: 5 }}>
+          <Stack spacing={3}>
             <TextField
               tabIndex={1}
               required
@@ -95,9 +103,14 @@ function CreateInvoice() {
               InputProps={{
                 startAdornment: <InputAdornment position="start">BTC</InputAdornment>,
               }}
-              disabled={loading}
-              helperText="Enter BTC amount shared by agent"
+              disabled={loading || !!generatedInvoice}
+              helperText={
+                invoiceAmount !== 0
+                  ? `Also equivalent to ${(invoiceAmount * 100000000).toLocaleString()} sats`
+                  : ''
+              }
             />
+            {loading && <LinearProgress />}
             <Button
               tabIndex={2}
               variant="contained"
@@ -105,11 +118,11 @@ function CreateInvoice() {
               size="large"
               disabled={loading || !!generatedInvoice}
             >
-              Create Invoice
+              {`Create Invoice for ${invoiceAmount} BTC`}
             </Button>
           </Stack>
           {generatedInvoice && (
-            <Stack spacing={2} sx={{ mt: 5 }}>
+            <Stack spacing={2} sx={{ mt: 3 }}>
               <Typography align="center" variant="subtitle2">
                 Show this QR Code to an agent near you
               </Typography>

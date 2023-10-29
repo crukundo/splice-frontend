@@ -48,7 +48,7 @@ function Send() {
             </ListItemIcon>
             <ListItemText
               primary="Send money across borders"
-              secondary="Transfer money quickly across 54 african countries."
+              secondary="Transfer money across 54 african countries."
             />
           </ListItem>
           <ListItem
@@ -99,8 +99,8 @@ function Send() {
               <QrCodeRounded />
             </ListItemIcon>
             <ListItemText
-              primary="Send to lightning invoice"
-              secondary="Scan or paste lightning invoice"
+              primary="Send to tapd address"
+              secondary="Scan or paste invoice or address"
             />
           </ListItem>
         </List>

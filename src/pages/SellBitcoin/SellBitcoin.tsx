@@ -191,7 +191,7 @@ function SellBitcoin() {
     <>
       <Meta title="Sell bitcoin" />
       <FullSizeAtopFlexBox>
-        <Box width={480} sx={{ mt: 4 }}>
+        <Box width={480} sx={{ mt: 4, px: 2, pb: 5 }}>
           <Stack spacing={2}>
             {saleErrorMsg && (
               <Alert sx={{ mb: 2 }} severity="error">
@@ -230,7 +230,7 @@ function SellBitcoin() {
             {fiatToReceive !== 0 && (
               <FormControlLabel
                 required
-                control={<Switch />}
+                control={<Switch color="primary" />}
                 label={`Seller accepts to receive ${fiatToReceive.toLocaleString()} ${fiatCurrency}`}
                 labelPlacement="end"
                 value={confirmFiatAmountToReceive}
@@ -281,6 +281,7 @@ function SellBitcoin() {
                         setFiatToReceive(0);
                       }}
                       color="success"
+                      size="large"
                     >
                       Mark complete
                     </Button>

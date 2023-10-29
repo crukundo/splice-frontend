@@ -111,8 +111,7 @@ function CrossBorder() {
   const fiatCurrency = localStorage.getItem(storedFiatCurrency);
 
   const handleCopyInvoice = () => {
-    // @ts-ignore
-    navigator.clipboard.writeText(invoiceResponse?.invoice);
+    navigator.clipboard.writeText(invoiceResponse?.invoice || '');
     notifyActions.push({
       message: 'Invoice copied to clipboard',
       dismissed: true,
@@ -123,8 +122,7 @@ function CrossBorder() {
   };
 
   const handleCopyProof = () => {
-    // @ts-ignore
-    navigator.clipboard.writeText(payResponse?.proofOfPayment);
+    navigator.clipboard.writeText(payResponse?.proofOfPayment || '');
     notifyActions.push({
       message: 'Proof of payment copied to clipboard',
       dismissed: true,
@@ -189,7 +187,7 @@ function CrossBorder() {
     <>
       <Meta title="Cross Border Payment" />
       <FullSizeAtopFlexBox>
-        <Box width={480} sx={{ p: 2 }}>
+        <Box width={480} sx={{ mt: 3, px: 2, pb: 5 }}>
           <Stack spacing={2}>
             <TextField
               required

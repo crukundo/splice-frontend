@@ -16,7 +16,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Stack } from '@mui/system';
+import { Stack, fontSize, typography } from '@mui/system';
 
 import Lottie from 'lottie-react';
 
@@ -200,8 +200,7 @@ function BuyBitcoin() {
   };
 
   const handleCopyProof = () => {
-    // @ts-ignore
-    navigator.clipboard.writeText(payResponse?.proofOfPayment);
+    navigator.clipboard.writeText(paymentRes?.paymentId || '');
     notifyActions.push({
       message: 'Proof of payment copied to clipboard',
       dismissed: true,
@@ -230,7 +229,7 @@ function BuyBitcoin() {
     <>
       <Meta title="Buy bitcoin" />
       <FullSizeAtopFlexBox>
-        <Box width={480} sx={{ mt: 4 }}>
+        <Box width={480} sx={{ mt: 4, px: 2, pb: 5 }}>
           <Stack spacing={2}>
             {buyErrorMsg && (
               <Alert sx={{ mb: 2 }} severity="error">
@@ -275,7 +274,7 @@ function BuyBitcoin() {
                 <FormControlLabel
                   required
                   control={<Switch />}
-                  label="I have shown the buyer the expected amount"
+                  label="Buyer has agreed to BTC amount"
                   labelPlacement="end"
                   value={confirmSeenBTCAmount}
                   onChange={() => {
@@ -380,6 +379,7 @@ function BuyBitcoin() {
                     onClick={() => {
                       setPaymentRes(null);
                       setLnInvoice('');
+                      setInvoiceVerified(false);
                       setBtcToReceive(0);
                       setFiatForBuy(0);
                       // ? navigate to wallet screen?

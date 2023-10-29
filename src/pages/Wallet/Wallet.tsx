@@ -71,11 +71,11 @@ function Wallet() {
             key={index}
             sx={{
               p: 2,
-              margin: 'auto',
-              maxWidth: 500,
+              maxWidth: 480,
               flexGrow: 1,
               backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#1A2027' : '#fff'),
               borderRadius: 3,
+              marginBottom: 2,
             }}
           >
             <Grid container spacing={2}>
@@ -141,57 +141,55 @@ function Wallet() {
     <>
       <Meta title="Wallet &amp; Transactions" />
       <FullSizeAtopFlexBox>
-        <Box width={480} sx={{ px: 2 }}>
-          <Stack spacing={2}>
-            <Typography sx={{ pt: 2 }} variant="h5">
-              Wallets
-            </Typography>
-            {loading ? (
-              <Grid container rowSpacing={2}>
-                <Grid item xs={12}>
-                  <Skeleton variant="rectangular" height={80} sx={{ borderRadius: 3 }} />
+        <Box width={480} sx={{ px: 3, pb: 5 }}>
+          <Typography sx={{ py: 2 }} variant="h5">
+            Wallets
+          </Typography>
+          {loading ? (
+            <Grid container rowSpacing={2}>
+              <Grid item xs={12}>
+                <Skeleton variant="rectangular" height={80} sx={{ borderRadius: 3 }} />
+              </Grid>
+              <Grid item xs={12}>
+                <Skeleton variant="rectangular" height={80} sx={{ borderRadius: 3 }} />
+              </Grid>
+            </Grid>
+          ) : (
+            <>
+              <WalletBalanceCard />
+              <Grid
+                container
+                columnSpacing={{ xs: 2, sm: 2, md: 3 }}
+                sx={{ justifyContent: 'center' }}
+              >
+                <Grid item xs={6}>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={() => {
+                      navigate('/buy-btc');
+                    }}
+                  >
+                    Buy Bitcoin
+                  </Button>
                 </Grid>
-                <Grid item xs={12}>
-                  <Skeleton variant="rectangular" height={80} sx={{ borderRadius: 3 }} />
+                <Grid item xs={6}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => {
+                      navigate('/sell-btc');
+                    }}
+                  >
+                    Sell Bitcoin
+                  </Button>
                 </Grid>
               </Grid>
-            ) : (
-              <>
-                <WalletBalanceCard />
-                <Grid
-                  container
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                  sx={{ justifyContent: 'center' }}
-                >
-                  <Grid item xs={6}>
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      onClick={() => {
-                        navigate('/buy-btc');
-                      }}
-                    >
-                      Buy Bitcoin
-                    </Button>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Button
-                      variant="outlined"
-                      fullWidth
-                      onClick={() => {
-                        navigate('/sell-btc');
-                      }}
-                    >
-                      Sell Bitcoin
-                    </Button>
-                  </Grid>
-                </Grid>
-                <Typography sx={{ pt: 1 }} variant="h5">
-                  Transaction history
-                </Typography>
-              </>
-            )}
-          </Stack>
+              <Typography sx={{ py: 2 }} variant="h5">
+                Transaction history
+              </Typography>
+            </>
+          )}
         </Box>
       </FullSizeAtopFlexBox>
     </>
