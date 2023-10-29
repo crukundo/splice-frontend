@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { CurrencyExchange } from '@mui/icons-material';
-import { Avatar, Box, Grid, Paper, Skeleton, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Button, Grid, Paper, Skeleton, Stack, Typography } from '@mui/material';
 
 import { BitcoinIcon } from '@bitcoin-design/bitcoin-icons-react/filled';
 
@@ -158,6 +158,34 @@ function Wallet() {
             ) : (
               <>
                 <WalletBalanceCard />
+                <Grid
+                  container
+                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                  sx={{ justifyContent: 'center' }}
+                >
+                  <Grid item xs={6}>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      onClick={() => {
+                        navigate('/ramp');
+                      }}
+                    >
+                      Buy Bitcoin
+                    </Button>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      onClick={() => {
+                        navigate('/ramp');
+                      }}
+                    >
+                      Sell Bitcoin
+                    </Button>
+                  </Grid>
+                </Grid>
                 <Typography sx={{ pt: 1 }} variant="h5">
                   Transaction history
                 </Typography>

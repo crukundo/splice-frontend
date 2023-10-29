@@ -1,4 +1,14 @@
-import { CallReceived, Send, Wallet } from '@mui/icons-material';
+import {
+  CallReceived,
+  CurrencyBitcoin,
+  CurrencyBitcoinRounded,
+  CurrencyBitcoinTwoTone,
+  CurrencyExchange,
+  CurrencyExchangeRounded,
+  Receipt,
+  Send,
+  Wallet,
+} from '@mui/icons-material';
 
 import asyncComponentLoader from '@/utils/loader';
 
@@ -33,11 +43,23 @@ const routes: Routes = {
     // title: 'Cross Border Settlement',
     // icon: Code,
   },
-  [Pages.Receive]: {
-    component: asyncComponentLoader(() => import('@/pages/Receive')),
-    path: '/receive',
-    title: 'Receive',
-    icon: CallReceived,
+  [Pages.CreateInvoice]: {
+    component: asyncComponentLoader(() => import('@/pages/CreateInvoice')),
+    path: '/create-invoice',
+    title: 'Create Invoice',
+    icon: Receipt,
+  },
+  [Pages.BuyBitcoin]: {
+    component: asyncComponentLoader(() => import('@/pages/BuyBitcoin')),
+    path: '/buy-btc',
+    title: 'Buy Bitcoin',
+    icon: CurrencyBitcoin,
+  },
+  [Pages.SellBitcoin]: {
+    component: asyncComponentLoader(() => import('@/pages/SellBitcoin')),
+    path: '/sell-btc',
+    title: 'Sell Bitcoin',
+    icon: CurrencyBitcoinTwoTone,
   },
   [Pages.NotFound]: {
     component: asyncComponentLoader(() => import('@/pages/NotFound')),

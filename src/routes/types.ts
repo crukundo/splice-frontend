@@ -9,7 +9,9 @@ enum Pages {
   Wallet,
   Send,
   CrossBorder,
-  Receive,
+  CreateInvoice,
+  BuyBitcoin,
+  SellBitcoin,
   NotFound,
 }
 

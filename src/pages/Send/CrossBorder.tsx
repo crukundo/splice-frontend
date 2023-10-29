@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { BoltSharp } from '@mui/icons-material';
+import { BoltSharp, CopyAll, Share } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -134,6 +134,21 @@ function CrossBorder() {
     });
   };
 
+  const handleShareProof = (event: any) => {
+    event.preventDefault();
+    if (navigator.share) {
+      navigator
+        .share({
+          title: 'Splice proof of payment',
+          text: payResponse?.proofOfPayment,
+        })
+        .then(() => {
+          console.log('Shared!');
+        })
+        .catch(console.error);
+    }
+  };
+
   const localLnAddress = localStorage.getItem(storedLnAddress);
 
   const handlePayInvoice = async () => {
@@ -174,8 +189,8 @@ function CrossBorder() {
     <>
       <Meta title="Cross Border Payment" />
       <FullSizeAtopFlexBox>
-        <Box>
-          <Stack spacing={2} sx={{ mt: 5 }}>
+        <Box width={480} sx={{ p: 2 }}>
+          <Stack spacing={2}>
             <TextField
               required
               id="send-amount"
@@ -186,7 +201,7 @@ function CrossBorder() {
               InputProps={{
                 startAdornment: <InputAdornment position="start">{fiatCurrency}</InputAdornment>,
               }}
-              disabled={loading}
+              disabled={loading || payResponse !== null}
             />
             <TextField
               required
@@ -209,7 +224,7 @@ function CrossBorder() {
                   ? 'Invalid lightning address'
                   : 'Enter a valid lightning address e.g femi@splice.africa'
               }
-              disabled={loading}
+              disabled={loading || payResponse !== null}
             />
             {loading ? <LinearProgress /> : null}
             <Button
@@ -229,11 +244,22 @@ function CrossBorder() {
                   currency={invoiceResponse.currency}
                   size={250}
                 />
+                <Button variant="text" onClick={handleCopyInvoice}>
+                  Copy invoice
+                </Button>
                 <Button variant="contained" onClick={handlePayInvoice} size="large">
                   Pay with wallet
                 </Button>
-                <Button variant="text" onClick={handleCopyInvoice}>
-                  Copy invoice
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    setPayResponse(null);
+                    setInvoiceResponse(null);
+                    setRemoteLnAddress('');
+                    setSendAmount(0);
+                  }}
+                >
+                  Cancel
                 </Button>
               </Stack>
             )}
@@ -252,11 +278,40 @@ function CrossBorder() {
                   />
                   <Card>
                     <CardContent>
-                      <TextField value={payResponse.proofOfPayment} fullWidth />
+                      <Typography align="center" variant="body1" sx={{ pb: 1 }} color="green">
+                        {`Paid to ${remoteLnAddress}`}
+                      </Typography>
+                      <TextField
+                        value={payResponse.proofOfPayment}
+                        fullWidth
+                        multiline
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Typography color="green">Proof:</Typography>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
                     </CardContent>
-                    <CardActions>
-                      <Button onClick={handleCopyProof} variant="text" size="small">
+                    <CardActions sx={{ justifyContent: 'center', pt: 0 }}>
+                      <Button
+                        onClick={handleCopyProof}
+                        variant="text"
+                        size="small"
+                        sx={{ textAlign: 'center' }}
+                        startIcon={<CopyAll />}
+                      >
                         Copy proof
+                      </Button>
+                      <Button
+                        onClick={handleShareProof}
+                        variant="text"
+                        size="small"
+                        sx={{ textAlign: 'center' }}
+                        startIcon={<Share />}
+                      >
+                        Share
                       </Button>
                     </CardActions>
                   </Card>
@@ -264,6 +319,8 @@ function CrossBorder() {
                     onClick={() => {
                       setInvoiceResponse(null);
                       setPayResponse(null);
+                      setRemoteLnAddress('');
+                      setSendAmount(0);
                     }}
                     color="primary"
                     size="large"
