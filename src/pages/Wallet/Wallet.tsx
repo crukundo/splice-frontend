@@ -10,7 +10,7 @@ import Meta from '@/components/Meta';
 import { FullSizeAtopFlexBox } from '@/components/styled';
 import { apiUrl, storedWalletId } from '@/config';
 import useNotifications from '@/store/notifications';
-import { BalanceProps, WalletRequestResponse } from '@/utils/interfaces';
+import { BalanceProps, WalletRequestResponse } from '@/lib/interfaces';
 
 function Wallet() {
   const navigate = useNavigate();

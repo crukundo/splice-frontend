@@ -2,8 +2,8 @@ import { ComponentType, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 import { RecoilRoot } from 'recoil';
-
-import ThemeProvider from '@/theme/Provider';
+import { Toaster } from "@/components/ui/toaster"
+import { ThemeProvider } from '@/theme/Provider';
 
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);
@@ -13,8 +13,9 @@ function render(App: ComponentType) {
     <StrictMode>
       <RecoilRoot>
         <HelmetProvider>
-          <ThemeProvider>
+          <ThemeProvider defaultTheme="system" storageKey="splice-ui-theme">
             <App />
+            <Toaster />
           </ThemeProvider>
         </HelmetProvider>
       </RecoilRoot>

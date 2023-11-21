@@ -22,8 +22,8 @@ import {
   storedWalletId,
   storedWithdrawFee,
 } from '@/config';
-import { CountryType, allowedCountries } from '@/utils/countries';
-import { CreateWalletRequestBody } from '@/utils/interfaces';
+import { CountryType, allowedCountries } from '@/lib/countries';
+import { CreateWalletRequestBody } from '@/lib/interfaces';
 
 function CreateNewWallet() {
   const [mobileNumber, setMobileNumber] = React.useState('');

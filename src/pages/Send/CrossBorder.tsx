@@ -30,7 +30,7 @@ import {
   CreateInvoiceResponse,
   PayInvoiceRequestBody,
   PayInvoiceResponse,
-} from '@/utils/interfaces';
+} from '@/lib/interfaces';
 
 import successfulTransaction from '../../lottie/success-transaction.json';
 

@@ -38,7 +38,7 @@
     >
     <meta
       property="og:image"
-      content="https://bitcoin.design/assets/images/guide/designing-products/designing-bitcoin-products/designing-bitcoin-products-web@2x.png"
+      content="@/assets/og.svg"
       data-react-helmet="true"
     />
     <meta
@@ -47,10 +47,8 @@
       data-react-helmet="true"
     />
 
-    <!-- https://web.dev/defer-non-critical-css/ -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   </head>
-  <body>
+  <body className="min-h-screen bg-background font-sans antialiased --font-sans">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     

@@ -1,48 +1,14 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
 
-import DefaultIcon from '@mui/icons-material/Deblur';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-
-import routes from '@/routes';
-import useSidebar from '@/store/sidebar';
+import { DashboardNav } from '@/components/nav';
+import { dashboardConfig } from '@/config';
 
 function Sidebar() {
-  const [isSidebarOpen, sidebarActions] = useSidebar();
-  const pathname = useLocation().pathname;
 
   return (
-    <SwipeableDrawer
-      anchor="left"
-      open={isSidebarOpen}
-      onClose={sidebarActions.close}
-      onOpen={sidebarActions.open}
-      disableBackdropTransition={false}
-      swipeAreaWidth={30}
-    >
-      <List sx={{ width: 250, pt: (theme) => `${theme.mixins.toolbar.minHeight}px` }}>
-        {Object.values(routes)
-          .filter((route) => route.title)
-          .map(({ path, title, icon: Icon }) => (
-            <ListItem sx={{ p: 0 }} key={path}>
-              <ListItemButton
-                selected={path === pathname}
-                component={Link}
-                to={path as string}
-                onClick={sidebarActions.close}
-              >
-                <ListItemIcon>{Icon ? <Icon /> : <DefaultIcon />}</ListItemIcon>
-                <ListItemText>{title}</ListItemText>
-              </ListItemButton>
-            </ListItem>
-          ))}
-      </List>
-    </SwipeableDrawer>
+    <aside className="hidden w-[200px] flex-col md:flex">
+          <DashboardNav items={dashboardConfig.sidebarNav} />
+        </aside>
   );
 }
 

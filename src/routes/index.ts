@@ -10,7 +10,7 @@ import {
   Wallet,
 } from '@mui/icons-material';
 
-import asyncComponentLoader from '@/utils/loader';
+import asyncComponentLoader from '@/lib/loader';
 
 import { Pages, Routes } from './types';
 

@@ -29,7 +29,7 @@ import {
   CalculateRampResponse,
   PayRampInvoiceBody,
   PayRampInvoiceResponse,
-} from '@/utils/interfaces';
+} from '@/lib/interfaces';
 
 import successfulTransaction from '../../lottie/success-transaction.json';
 

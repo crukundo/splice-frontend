@@ -16,7 +16,7 @@ import SpliceQrCode from '@/components/QRCode';
 import { FullSizeAtopFlexBox } from '@/components/styled';
 import { apiUrl } from '@/config';
 import useNotifications from '@/store/notifications';
-import { GenerateRampInvoiceBody, GenerateRampInvoiceResponse } from '@/utils/interfaces';
+import { GenerateRampInvoiceBody, GenerateRampInvoiceResponse } from '@/lib/interfaces';
 
 function CreateInvoice() {
   const [loading, setLoading] = useState(false);

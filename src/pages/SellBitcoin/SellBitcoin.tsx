@@ -24,8 +24,8 @@ import {
   CalculateRampResponse,
   GenerateRampInvoiceBody,
   GenerateRampInvoiceResponse,
-} from '@/utils/interfaces';
-import sleep from '@/utils/sleep';
+} from '@/lib/interfaces';
+import sleep from '@/lib/sleep';
 
 function SellBitcoin() {
   const [loading, setLoading] = React.useState(false);

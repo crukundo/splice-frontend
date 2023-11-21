@@ -1,6 +1,6 @@
-import isMobile from '@/utils/is-mobile';
+import isMobile from '@/lib/is-mobile';
 
-import type { Notifications } from './types';
+import { DashboardConfig, Notifications } from '@/lib/interfaces';
 
 const title = 'Splice Africa';
 
@@ -10,10 +10,7 @@ const repository = 'https://github.com/splice-africa';
 
 const apiUrl = 'https://splice.africa/api';
 
-const storedWalletId = 'splice-wallet-id';
-const storedFiatCurrency = 'splice-fiat';
-const storedLnAddress = 'splice-ln-url';
-const storedWithdrawFee = 'splice-withdraw-fee';
+const storedWallet = 'splice-wallet';
 
 const messages = {
   app: {
@@ -59,6 +56,52 @@ const defaultMetaTags = {
 };
 const giphy404 = 'https://giphy.com/embed/xTiN0L7EW5trfOvEk0';
 
+const dashboardConfig: DashboardConfig = {
+  mainNav: [
+    {
+      title: "About",
+      href: "/about",
+    },
+    {
+      title: "FAQ",
+      href: "/faq",
+    },
+    {
+      title: "Support",
+      href: "/support",
+      disabled: true,
+    },
+  ],
+  sidebarNav: [
+    {
+      title: "Wallet",
+      href: "/dashboard",
+      icon: "wallet",
+    },
+    {
+      title: "Send money",
+      href: "/dashboard/send",
+      icon: "send",
+    },
+    {
+      title: "Create Invoice",
+      href: "/dashboard/invoice",
+      icon: "invoices",
+    },
+    {
+      title: "Buy & Sell Bitcoin",
+      href: "/dashboard/buy",
+      icon: "bitcoin",
+    },
+    {
+      title: "Settings",
+      href: "/dashboard/settings",
+      icon: "settings",
+    },
+  ],
+}
+
+
 export {
   loader,
   notifications,
@@ -70,8 +113,6 @@ export {
   defaultMetaTags,
   giphy404,
   apiUrl,
-  storedWalletId,
-  storedFiatCurrency,
-  storedLnAddress,
-  storedWithdrawFee,
+  storedWallet,
+  dashboardConfig
 };

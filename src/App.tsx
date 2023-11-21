@@ -1,8 +1,4 @@
-import { Fragment } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-
-import CssBaseline from '@mui/material/CssBaseline';
-
 import { withErrorHandler } from '@/error-handling';
 import AppErrorBoundaryFallback from '@/error-handling/fallbacks/App';
 import Pages from '@/routes/Pages';
@@ -10,19 +6,24 @@ import Header from '@/sections/Header';
 import Notifications from '@/sections/Notifications';
 import SW from '@/sections/SW';
 import Sidebar from '@/sections/Sidebar';
+import { SiteFooter } from './components/site-footer';
 
 function App() {
   return (
-    <Fragment>
-      <CssBaseline />
+    <div className="flex min-h-screen flex-col space-y-6">
       <Notifications />
       <SW />
       <BrowserRouter>
         <Header />
+        <div className="container grid flex-1 gap-12 md:grid-cols-[200px_1fr]">
         <Sidebar />
-        <Pages />
+        <main className="flex w-full flex-1 flex-col overflow-hidden">
+          {/* <Pages /> */}
+        </main>
+        </div>
+        <SiteFooter className="border-t" />
       </BrowserRouter>
-    </Fragment>
+    </div>
   );
 }
 
