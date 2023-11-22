@@ -18,6 +18,7 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import PhoneInput from 'react-phone-input-2';
+import { toast } from '@/components/ui/use-toast';
 
 interface CreateNewWalletProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -87,8 +88,11 @@ function CreateNewWallet({
       });
 
       if (!response.ok) {
-        // show as an alert or notification
-        throw new Error('Failed to create wallet');
+        return toast({
+          title: "Something went wrong.",
+          description: "Your wallet was not created. Please try again.",
+          variant: "destructive",
+        })
       }
 
       await response.json().then((data) => {
@@ -137,111 +141,111 @@ function CreateNewWallet({
           </p>
         </div>
         <div className={cn("grid", className)} {...props}>
-      <Form {...form}>
-        <form>
-          <FormField
-            control={form.control}
-            name="country"
-            render={({ field }) => (
-              <FormItem className="my-2">
-                <FormLabel>Select Your Country</FormLabel>
-                <FormMessage />
-                <RadioGroup
-                  onValueChange={handleChosenCountry}
-                  className="grid max-w-md grid-cols-2 gap-8 pt-2"
-                >
-                  {allowedCountries.map((country) => (
-                    <FormItem key={country.code}>
-                      <FormLabel className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
-                        <FormControl>
-                          <RadioGroupItem
-                            value={country.code}
-                            className="sr-only cursor-pointer"
-                          />
-                        </FormControl>
-                        <Avatar className="mb-2">
-                          <AvatarImage
-                            src={`https://flagcdn.com/56x42/${country.code.toLowerCase()}.png`}
-                            alt={country.label}
-                          />
-                        </Avatar>
-                        {country.label}
-                      </FormLabel>
+          <Form {...form}>
+            <form>
+              <FormField
+                control={form.control}
+                name="country"
+                render={({ field }) => (
+                  <FormItem className="my-2">
+                    <FormLabel>Select Your Country</FormLabel>
+                    <FormMessage />
+                    <RadioGroup
+                      onValueChange={handleChosenCountry}
+                      className="grid max-w-md grid-cols-2 gap-8 pt-2"
+                    >
+                      {allowedCountries.map((country) => (
+                        <FormItem key={country.code}>
+                          <FormLabel className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                            <FormControl>
+                              <RadioGroupItem
+                                value={country.code}
+                                className="sr-only cursor-pointer"
+                              />
+                            </FormControl>
+                            <Avatar className="mb-2">
+                              <AvatarImage
+                                src={`https://flagcdn.com/56x42/${country.code.toLowerCase()}.png`}
+                                alt={country.label}
+                              />
+                            </Avatar>
+                            {country.label}
+                          </FormLabel>
+                        </FormItem>
+                      ))}
+                    </RadioGroup>
+                    <FormDescription>My country is not listed</FormDescription>
+                  </FormItem>
+                )}
+              />
+              {selectedCountry && (
+                <FormField
+                  control={form.control}
+                  name="mobileNumber"
+                  render={({ field }) => (
+                    <FormItem className="my-2">
+                      <FormLabel>Mobile number</FormLabel>
+                      <FormMessage />
+                      <PhoneInput
+                        inputProps={{
+                          required: true,
+                          autoFocus: true,
+                          className:
+                            "flex px-3 py-2 h-10 w-full rounded-md border border-input bg-transparent w-4 shrink-0 opacity-50",
+                        }}
+                        value={mobileNumber}
+                        country={selectedCountry?.code}
+                        preferredCountries={["KE", "NG"]}
+                        placeholder={`${
+                          selectedCountry.code === "NG"
+                            ? "234 123 457 8900"
+                            : "254 701 234567"
+                        }`}
+                        prefix={"+"}
+                        specialLabel=""
+                        onChange={handleMobileNumber}
+                      />
                     </FormItem>
-                  ))}
-                </RadioGroup>
-                <FormDescription>My country is not listed</FormDescription>
-              </FormItem>
-            )}
-          />
-          {selectedCountry && (
-            <FormField
-              control={form.control}
-              name="mobileNumber"
-              render={({ field }) => (
-                <FormItem className="my-2">
-                  <FormLabel>Mobile number</FormLabel>
-                  <FormMessage />
-                  <PhoneInput
-                    inputProps={{
-                      required: true,
-                      autoFocus: true,
-                      className:
-                        "flex px-3 py-2 h-10 w-full rounded-md border border-input bg-transparent w-4 shrink-0 opacity-50",
-                    }}
-                    value={mobileNumber}
-                    country={selectedCountry?.code}
-                    preferredCountries={["KE", "NG"]}
-                    placeholder={`${
-                      selectedCountry.code === "NG"
-                        ? "234 123 457 8900"
-                        : "254 701 234567"
-                    }`}
-                    prefix={"+"}
-                    specialLabel=""
-                    onChange={handleMobileNumber}
-                  />
-                </FormItem>
+                  )}
+                />
               )}
-            />
-          )}
-          {mobileNumber && (
-            <FormField
-              control={form.control}
-              name="withdrawFee"
-              render={({ field }) => (
-                <FormItem className="my-2">
-                  <FormLabel>Withdraw fee</FormLabel>
-                  <FormMessage />
-                  <Input
-                    id="withdrawFee"
-                    type="number"
-                    {...field}
-                    onChange={handleWithdrawFee}
-                  />
-                </FormItem>
+              {mobileNumber && (
+                <FormField
+                  control={form.control}
+                  name="withdrawFee"
+                  render={({ field }) => (
+                    <FormItem className="my-2">
+                      <FormLabel>Withdraw fee</FormLabel>
+                      <FormMessage />
+                      <Input
+                        id="withdrawFee"
+                        type="number"
+                        {...field}
+                        onChange={handleWithdrawFee}
+                      />
+                    </FormItem>
+                  )}
+                />
               )}
-            />
-          )}
 
-          <div className="grid gap-2">
-            <Button
-              onClick={onPressContinue}
-              className={cn(buttonVariants())}
-              disabled={
-                isLoading || !mobileNumber || !selectedCountry || !withdrawFee
-              }
-              type="submit"
-            >
-              {isLoading && (
-                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Continue
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+              <div className="grid gap-2">
+                <Button
+                  onClick={onPressContinue}
+                  className={cn(buttonVariants())}
+                  disabled={
+                    isLoading || !mobileNumber || !selectedCountry || !withdrawFee
+                  }
+                  type="submit"
+                >
+                  {isLoading && (
+                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Continue
+                </Button>
+              </div>
+            </form>
+          </Form>
+      </div>
         <p className="px-8 text-center text-sm text-muted-foreground">
           <Link
             to="/create-wallet"

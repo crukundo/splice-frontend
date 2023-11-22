@@ -1,14 +1,10 @@
-import React from 'react';
 import QRCode from 'react-qr-code';
 
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import PaymentIcon from '@mui/icons-material/Payment';
-import { Button, ButtonBase, Stack, Typography } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
+import { ButtonBase, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 
 import { FullSizeCenteredFlexBox } from '@/components/styled';
-import useNotifications from '@/store/notifications';
+import { toast } from '../ui/use-toast';
 
 interface Props {
   size?: number; // px (square)
@@ -18,33 +14,21 @@ interface Props {
 }
 
 function SpliceQrCode({ invoice, amount, currency, size }: Props) {
-  const [, notifyActions] = useNotifications();
 
   const handleCopy = () => {
     // Copy the QR string to the clipboard
     navigator.clipboard.writeText(invoice);
-    notifyActions.push({
-      message: 'Invoice copied to clipboard',
-      dismissed: true,
-      options: {
-        variant: 'info',
-      },
-    });
+    return toast({
+      title: "Copied",
+      description: "Invoice is on your clipboard",
+    })
   };
 
   return (
-    <FullSizeCenteredFlexBox>
-      <Box textAlign="center">
-        <Stack>
-          <Typography variant="h4" gutterBottom>
-            {currency} {amount}
-          </Typography>
-          <ButtonBase onClick={handleCopy}>
-            <QRCode value={invoice} size={size} />
-          </ButtonBase>
-        </Stack>
-      </Box>
-    </FullSizeCenteredFlexBox>
+    <div className='flex flex-col justify-center items-center'>
+      <h3 className="font-semibold tracking-tight text-4xl my-4">{currency} {amount}</h3>
+        <QRCode className='mb-3' value={invoice} size={size} />
+    </div>
   );
 }
 

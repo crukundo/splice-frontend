@@ -1,37 +1,32 @@
 import Meta from '@/components/Meta';
 import { DashboardShell } from '@/components/shell';
 import { DashboardHeader } from '@/components/header';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { AvatarFallback } from '@radix-ui/react-avatar';
 import { useEffect, useState } from 'react';
 import { BalanceProps, WalletRequestResponse, WalletTransactionsResponse } from '@/lib/interfaces';
 import { apiUrl, storedWallet } from '@/config';
-import useNotifications from '@/store/notifications';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorage from '@/hooks/use-local-storage';
-import { Currency } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from '@/components/ui/use-toast';
 
 function Wallet() {
   const [userWallet, setUserWallet] = useState<WalletRequestResponse | null>(null);
   const [userTransactions, setUserTransactions] = useState<[] | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [, notifyActions] = useNotifications();
   const defaultWallet = {id: "95b650d2-8fa1-4b6c-a341-0e0ba2f4f041", lightning_address: "0769950599@splice.africa", preferred_fiat_currency: "KES", withdrawal_fee: 100, balances: [{amount: 2, currency: "BTC"}, {amount: 324244.4000000001, currency: "KES"}]}
   const [storedValue, ,] = useLocalStorage(storedWallet, defaultWallet)
   console.log("storedValue: ", storedValue);
   useEffect(() => {
     if (!storedValue) {
       navigate('/');
-      notifyActions.push({
-        message: 'No wallet found',
-        dismissed: true,
-        options: {
-          variant: 'error',
-        },
-      });
+      toast({
+        title: "Something went wrong.",
+        description: "We couldn't find your wallet. Please refresh",
+        variant: "destructive",
+      })
     }
   }, [storedWallet]);
 
@@ -46,8 +41,11 @@ function Wallet() {
       });
 
       if (!response.ok) {
-        // show as an alert or notification
-        throw new Error("Couldn't get wallet");
+        return toast({
+          title: "Something went wrong.",
+          description: "We couldn't find your wallet. Please refresh.",
+          variant: "destructive",
+        })
       }
 
       const responseData: WalletRequestResponse = await response.json();
@@ -71,8 +69,11 @@ function Wallet() {
       });
 
       if (!response.ok) {
-        // show as an alert or notification
-        throw new Error("Couldn't get transactions");
+        return toast({
+          title: "Something went wrong.",
+          description: "Having trouble getting your transactions. Please refresh.",
+          variant: "destructive",
+        })
       }
 
       const transactionsData: WalletTransactionsResponse = await response.json();
@@ -91,13 +92,11 @@ function Wallet() {
       getUserTransactions();
     } else {
       navigate('/');
-      notifyActions.push({
-        message: 'No wallet found',
-        dismissed: true,
-        options: {
-          variant: 'error',
-        },
-      });
+      toast({
+        title: "Something went wrong.",
+        description: "We couldn't find your wallet. Please refresh.",
+        variant: "destructive",
+      })
     }
   }, [storedWallet]);
 
@@ -156,14 +155,28 @@ function Wallet() {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
         <div className="col-span-6 space-y-2">
-          <Skeleton className="h-5 w-2/5" />
-          <Skeleton className="h-4 w-4/5" />
-          <Skeleton className="h-4 w-5/5" />
+        <Card>
+          <CardHeader className="gap-2">
+            <Skeleton className="h-5 w-1/5" />
+            <Skeleton className="h-4 w-4/5" />
+          </CardHeader>
+          <CardContent className="h-10" />
+          <CardFooter>
+            <Skeleton className="h-8 w-[120px]" />
+          </CardFooter>
+        </Card>
         </div>
         <div className="col-span-6 space-y-2">
-          <Skeleton className="h-5 w-2/5" />
-          <Skeleton className="h-4 w-4/5" />
-          <Skeleton className="h-4 w-5/5" />
+        <Card>
+      <CardHeader className="gap-2">
+        <Skeleton className="h-5 w-1/5" />
+        <Skeleton className="h-4 w-4/5" />
+      </CardHeader>
+      <CardContent className="h-10" />
+      <CardFooter>
+        <Skeleton className="h-8 w-[120px]" />
+      </CardFooter>
+    </Card>
         </div>
     </div>
     )

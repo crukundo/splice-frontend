@@ -12,7 +12,7 @@ enum Pages {
   Wallet,
   // Send,
   // CrossBorder,
-  // CreateInvoice,
+  Receive,
   // BuyBitcoin,
   // SellBitcoin,
   // NotFound,

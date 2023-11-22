@@ -46,12 +46,12 @@ const routes: Routes = {
   //   // title: 'Cross Border Settlement',
   //   // icon: Code,
   // },
-  // [Pages.CreateInvoice]: {
-  //   component: asyncComponentLoader(() => import('@/pages/CreateInvoice')),
-  //   path: '/create-invoice',
-  //   title: 'Create Invoice',
-  //   icon: Receipt,
-  // },
+  [Pages.Receive]: {
+    component: asyncComponentLoader(() => import('@/pages/Receive')),
+    path: '/receive',
+    title: 'Receive',
+    icon: Receipt,
+  },
   // [Pages.BuyBitcoin]: {
   //   component: asyncComponentLoader(() => import('@/pages/BuyBitcoin')),
   //   path: '/buy-btc',
