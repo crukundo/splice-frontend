@@ -59,10 +59,6 @@ const giphy404 = 'https://giphy.com/embed/xTiN0L7EW5trfOvEk0';
 const dashboardConfig: DashboardConfig = {
   mainNav: [
     {
-      title: "About",
-      href: "/about",
-    },
-    {
       title: "FAQ",
       href: "/faq",
     },
