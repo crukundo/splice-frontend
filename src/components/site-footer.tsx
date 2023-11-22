@@ -11,16 +11,7 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
         <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
           <Icons.logo />
           <p className="text-center text-sm leading-loose md:text-left">
-            The source code is available on{" "}
-            <a
-              href="https://github.com/crukundo/splice-frontend"
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium underline underline-offset-4"
-            >
-              GitHub
-            </a>
-            .
+            Connecting Africa via Bitcoin's globally accessible liquidity network
           </p>
         </div>
         <ModeToggle />

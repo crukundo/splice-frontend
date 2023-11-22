@@ -1,37 +1,48 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import {
-  Autocomplete,
-  Box,
-  Button,
-  InputAdornment,
-  LinearProgress,
-  Stack,
-  TextField,
-} from '@mui/material';
-
-import { MuiTelInput, MuiTelInputCountry, matchIsValidTel } from 'mui-tel-input';
+import { Link, useNavigate } from 'react-router-dom';
 
 import Meta from '@/components/Meta';
-import { FullSizeAtopFlexBox } from '@/components/styled';
 import {
   apiUrl,
-  storedFiatCurrency,
-  storedLnAddress,
-  storedWalletId,
-  storedWithdrawFee,
+  storedWallet
 } from '@/config';
 import { CountryType, allowedCountries } from '@/lib/countries';
 import { CreateWalletRequestBody } from '@/lib/interfaces';
+import useLocalStorage from '@/hooks/use-local-storage';
+import { Icons } from '@/components/icons';
+import { cn } from '@/lib/utils';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Input } from '@/components/ui/input';
+import { useForm } from 'react-hook-form';
+import PhoneInput from 'react-phone-input-2';
 
-function CreateNewWallet() {
+interface CreateNewWalletProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+function CreateNewWallet({
+  className,
+  ...props
+}: CreateNewWalletProps) {
   const [mobileNumber, setMobileNumber] = React.useState('');
   const [withdrawFee, setWithdrawFee] = React.useState(0);
   const [selectedCountry, setSelectedCountry] = React.useState<CountryType | null>(null);
-  const [isValidMobile, setIsValidMobile] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const navigate = useNavigate();
+  const [, setValue] = useLocalStorage(storedWallet,"")
+  const form = useForm()
+
+  // Create the valueToCountryMap by mapping the array
+  const valueToCountryMap: { [key: string]: CountryType } = allowedCountries.reduce((acc, country) => {
+    acc[country.code] = country;
+    return acc;
+  }, {} as { [key: string]: CountryType });
+
+  const handleChosenCountry = (value: string) => {
+    const chosen = valueToCountryMap[value]
+    setSelectedCountry(chosen)
+  }
 
   const formatPhoneNumber = (
     phoneNumber: string | undefined,
@@ -52,18 +63,13 @@ function CreateNewWallet() {
     setMobileNumber(newNumber);
   };
 
-  const handleMobileNumberBlur = () => {
-    // Validate the lightning address onBlur
-    setIsValidMobile(matchIsValidTel(mobileNumber));
-  };
-
   const handleWithdrawFee = (event: any) => {
     const inputFee = event.target.value;
     setWithdrawFee(inputFee);
   };
 
   const onPressContinue = async () => {
-    setLoading(true);
+    setIsLoading(true);
     const formattedNumber = formatPhoneNumber(mobileNumber, selectedCountry?.phone);
     const payload: CreateWalletRequestBody = {
       phoneNumber: formattedNumber,
@@ -87,12 +93,17 @@ function CreateNewWallet() {
 
       await response.json().then((data) => {
         console.log('createWalletRes: ', data);
-        localStorage.setItem(storedWalletId, data.id);
-        localStorage.setItem(storedLnAddress, data.lightning_address);
-        localStorage.setItem(storedWithdrawFee, data.withdrawal_fee.toString());
-        localStorage.setItem(storedFiatCurrency, data.balances[0].currency);
+        const walletData = {
+          id: data.id,
+          lightning_address: data.lightning_address,
+          withdrawal_fee: data.withdrawal_fee.toString(),
+          preferred_fiat_currency: data.preferred_fiat_currency,
+        }
+
+        const serializedWalletData = JSON.stringify(walletData)
+        setValue(serializedWalletData)
       });
-      setLoading(false);
+      setIsLoading(false);
       navigate('/wallet');
     } catch (error: any) {
       console.log('Error creating wallet: ', error.message);
@@ -102,95 +113,145 @@ function CreateNewWallet() {
   return (
     <>
       <Meta title="Create a new wallet" />
-      <FullSizeAtopFlexBox>
-        <Box width={480}>
-          <Stack spacing={2} sx={{ p: 2 }}>
-            {/* <Typography component="h1" variant="h5" align="center">
-              Lets setup your account
-            </Typography> */}
-            <Autocomplete
-              disabled={loading}
-              sx={{ pb: 2 }}
-              id="country-selector"
-              options={allowedCountries}
-              autoHighlight
-              getOptionLabel={(option) => option.label}
-              onChange={(event, newValue) => {
-                setSelectedCountry(newValue);
-              }}
-              value={selectedCountry}
-              renderOption={(props, option) => (
-                <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                  <img
-                    loading="lazy"
-                    width="20"
-                    srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                    src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                    alt=""
+      <div className="container flex h-screen w-screen flex-col items-center justify-center">
+      <Link
+        to="/"
+        className={cn(
+          buttonVariants({ variant: "ghost" }),
+          "absolute left-4 top-4 md:left-8 md:top-8"
+        )}
+      >
+        <>
+          <Icons.chevronLeft className="mr-2 h-4 w-4" />
+          Back
+        </>
+      </Link>
+      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        <div className="flex flex-col space-y-2 text-center">
+          <Icons.logo className="mx-auto h-6 w-6" />
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Welcome back
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Enter your wallet id to access your wallet
+          </p>
+        </div>
+        <div className={cn("grid", className)} {...props}>
+      <Form {...form}>
+        <form>
+          <FormField
+            control={form.control}
+            name="country"
+            render={({ field }) => (
+              <FormItem className="my-2">
+                <FormLabel>Select Your Country</FormLabel>
+                <FormMessage />
+                <RadioGroup
+                  onValueChange={handleChosenCountry}
+                  className="grid max-w-md grid-cols-2 gap-8 pt-2"
+                >
+                  {allowedCountries.map((country) => (
+                    <FormItem key={country.code}>
+                      <FormLabel className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                        <FormControl>
+                          <RadioGroupItem
+                            value={country.code}
+                            className="sr-only cursor-pointer"
+                          />
+                        </FormControl>
+                        <Avatar className="mb-2">
+                          <AvatarImage
+                            src={`https://flagcdn.com/56x42/${country.code.toLowerCase()}.png`}
+                            alt={country.label}
+                          />
+                        </Avatar>
+                        {country.label}
+                      </FormLabel>
+                    </FormItem>
+                  ))}
+                </RadioGroup>
+                <FormDescription>My country is not listed</FormDescription>
+              </FormItem>
+            )}
+          />
+          {selectedCountry && (
+            <FormField
+              control={form.control}
+              name="mobileNumber"
+              render={({ field }) => (
+                <FormItem className="my-2">
+                  <FormLabel>Mobile number</FormLabel>
+                  <FormMessage />
+                  <PhoneInput
+                    inputProps={{
+                      required: true,
+                      autoFocus: true,
+                      className:
+                        "flex px-3 py-2 h-10 w-full rounded-md border border-input bg-transparent w-4 shrink-0 opacity-50",
+                    }}
+                    value={mobileNumber}
+                    country={selectedCountry?.code}
+                    preferredCountries={["KE", "NG"]}
+                    placeholder={`${
+                      selectedCountry.code === "NG"
+                        ? "234 123 457 8900"
+                        : "254 701 234567"
+                    }`}
+                    prefix={"+"}
+                    specialLabel=""
+                    onChange={handleMobileNumber}
                   />
-                  {option.label} ({option.code}) +{option.phone}
-                </Box>
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Choose your country"
-                  inputProps={{
-                    ...params.inputProps,
-                    autoComplete: 'new-password', // disable autocomplete and autofill
-                  }}
-                />
+                </FormItem>
               )}
             />
-            {selectedCountry && (
-              <MuiTelInput
-                sx={{ fontSize: 20, pb: 2 }}
-                value={mobileNumber}
-                defaultCountry={selectedCountry?.code as MuiTelInputCountry}
-                continents={['AF']}
-                preferredCountries={['KE', 'NG']}
-                onChange={handleMobileNumber}
-                onBlur={handleMobileNumberBlur}
-                required={true}
-                label="Mobile number"
-                error={!isValidMobile}
-                helperText={
-                  !isValidMobile
-                    ? 'Invalid mobile number'
-                    : 'We will use this to create a lightning address'
-                }
-                disabled={loading}
-              />
-            )}
-            {mobileNumber && (
-              <TextField
-                required
-                id="withdraw-fees"
-                label="Withdraw fee"
-                type="number"
-                onChange={handleWithdrawFee}
-                value={withdrawFee}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">{`${selectedCountry?.currency}`}</InputAdornment>
-                  ),
-                }}
-                helperText={`Fixed service fee you will charge users to withdraw BTC in ${selectedCountry?.currency}?`}
-                disabled={loading}
-              />
-            )}
-            {loading ? <LinearProgress /> : null}
+          )}
+          {mobileNumber && (
+            <FormField
+              control={form.control}
+              name="withdrawFee"
+              render={({ field }) => (
+                <FormItem className="my-2">
+                  <FormLabel>Withdraw fee</FormLabel>
+                  <FormMessage />
+                  <Input
+                    id="withdrawFee"
+                    type="number"
+                    {...field}
+                    onChange={handleWithdrawFee}
+                  />
+                </FormItem>
+              )}
+            />
+          )}
+
+          <div className="grid gap-2">
             <Button
-              variant="contained"
               onClick={onPressContinue}
-              size="large"
-              disabled={loading || !mobileNumber || !selectedCountry || !withdrawFee}
+              className={cn(buttonVariants())}
+              disabled={
+                isLoading || !mobileNumber || !selectedCountry || !withdrawFee
+              }
+              type="submit"
             >
+              {isLoading && (
+                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Continue
             </Button>
-          </Stack>
-        </Box>
-      </FullSizeAtopFlexBox>
+          </div>
+        </form>
+      </Form>
+    </div>
+        <p className="px-8 text-center text-sm text-muted-foreground">
+          <Link
+            to="/create-wallet"
+            className="hover:text-brand underline underline-offset-4"
+          >
+            Don&apos;t have a wallet? Create one here
+          </Link>
+        </p>
+      </div>
+    </div>
     </>
   );
 }

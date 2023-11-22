@@ -19,6 +19,14 @@ export interface CreateWalletRequestBody {
   preferredFiatCurrency?: string;
 }
 
+export interface CreateWalletResponse {
+  id: string
+  lightning_address: string
+  preferred_fiat_currency: string
+  withdrawal_fee: number
+  balances: BalanceProps[]
+}
+
 export interface CreateInvoiceRequestBody {
   walletId?: string;
   destionationAddress?: string;
@@ -78,6 +86,20 @@ export interface PayRampInvoiceBody {
 export interface PayRampInvoiceResponse {
   paymentId: string;
   status: string;
+}
+
+export type Wallet = {
+  alias?: string
+  avatar?: string // robohash of wallet uuid?
+  id: string
+  lnAddress: string
+  fiatCurrency: string
+  withdrawFee: string
+}
+
+
+export interface WalletTransactionsResponse {
+  payments: []
 }
 
 export type Notifications = {

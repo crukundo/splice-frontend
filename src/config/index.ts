@@ -75,27 +75,27 @@ const dashboardConfig: DashboardConfig = {
   sidebarNav: [
     {
       title: "Wallet",
-      href: "/dashboard",
+      href: "/wallet",
       icon: "wallet",
     },
     {
-      title: "Send money",
-      href: "/dashboard/send",
+      title: "Send",
+      href: "/send",
       icon: "send",
     },
     {
-      title: "Create Invoice",
-      href: "/dashboard/invoice",
+      title: "Receive",
+      href: "/receive",
       icon: "invoices",
     },
     {
       title: "Buy & Sell Bitcoin",
-      href: "/dashboard/buy",
+      href: "/ramp",
       icon: "bitcoin",
     },
     {
       title: "Settings",
-      href: "/dashboard/settings",
+      href: "/settings",
       icon: "settings",
     },
   ],

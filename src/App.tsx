@@ -8,6 +8,8 @@ import SW from '@/sections/SW';
 import Sidebar from '@/sections/Sidebar';
 import { SiteFooter } from './components/site-footer';
 
+const isAuth = true;
+
 function App() {
   return (
     <div className="flex min-h-screen flex-col space-y-6">
@@ -18,7 +20,7 @@ function App() {
         <div className="container grid flex-1 gap-12 md:grid-cols-[200px_1fr]">
         <Sidebar />
         <main className="flex w-full flex-1 flex-col overflow-hidden">
-          {/* <Pages /> */}
+          <Pages />
         </main>
         </div>
         <SiteFooter className="border-t" />

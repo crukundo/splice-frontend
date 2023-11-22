@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 const isServer = typeof window === "undefined"
 
-const useLocalStorage = (key, initialValue) => {
+const useLocalStorage = (key: string, initialValue: any) => {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = useState(() => initialValue)
@@ -33,7 +33,7 @@ const useLocalStorage = (key, initialValue) => {
 
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
-  const setValue = (value) => {
+  const setValue = (value: any) => {
     try {
       // Allow value to be a function so we have same API as useState
       const valueToStore =

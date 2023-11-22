@@ -1,10 +1,3 @@
-"use client"
-
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Wallet } from "@/types"
-
-import sleep from "@/lib/sleep"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,70 +6,53 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
-import { toast } from "./ui/use-toast"
+import { Avatar, AvatarImage } from "./ui/avatar"
+import { Wallet } from "@/lib/interfaces"
+import { Link } from "react-router-dom"
 
-export function AccountNav(wallet: Wallet) {
-  const router = useRouter()
+export function AccountNav() {
 
-  const handleLogout = async () => {
-    await sleep(1000)
-    localStorage.clear()
-    toast({
-      title: "Logged out",
-      description: "See you later",
-    })
-    await sleep(1000)
-    router.refresh()
-    router.push("/dashboard")
-  }
+  const wallet = JSON.parse(
+    '{"id":"a1e0ac27-5cfe-40c5-835c-b302e0ecd918","lightning_address":"254721234499@splice.africa","withdrawal_fee":"100","preferred_fiat_currency":"KES"}'
+  )
+
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar className="h-8 w-8">
-          {wallet.avatar ? (
-            <AvatarImage alt="Picture" src={wallet.avatar} />
-          ) : (
-            <AvatarFallback>
-              <AvatarImage
-                alt="Picture"
-                src={`https://robohash.org/${wallet.id}`}
-              />
-            </AvatarFallback>
-          )}
+            <AvatarImage alt="Picture" src={`https://robohash.org/${wallet.id}`} />
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
             {wallet.alias && <p className="font-medium">{wallet.alias}</p>}
-            {wallet.lnAddress && (
+            {wallet.lightning_address && (
               <p className="w-[200px] truncate text-sm text-muted-foreground">
-                {wallet.lnAddress}
+                {wallet.lightning_address}
               </p>
             )}
           </div>
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/dashboard">Dashboard</Link>
+          <Link to="/profile">Copy splice address</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/dashboard/billing">Billing</Link>
+          <Link to="/dashboard/billing">Copy wallet id</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/dashboard/settings">Settings</Link>
+          <Link to="/dashboard/settings">Edit profile</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="cursor-pointer"
           onSelect={(event) => {
             event.preventDefault()
-            handleLogout
           }}
         >
-          Sign out
+          Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
