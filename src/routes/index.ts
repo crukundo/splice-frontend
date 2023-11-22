@@ -34,12 +34,12 @@ const routes: Routes = {
     title: 'Wallet',
     icon: Wallet,
   },
-  // [Pages.Send]: {
-  //   component: asyncComponentLoader(() => import('@/pages/Send')),
-  //   path: '/send',
-  //   title: 'Send',
-  //   icon: Send,
-  // },
+  [Pages.Send]: {
+    component: asyncComponentLoader(() => import('@/pages/Send')),
+    path: '/send',
+    title: 'Send',
+    icon: Send,
+  },
   // [Pages.CrossBorder]: {
   //   component: asyncComponentLoader(() => import('@/pages/Send/CrossBorder')),
   //   path: '/send/cross',

@@ -10,7 +10,7 @@ enum AuthPages {
 enum Pages {
   // Welcome,
   Wallet,
-  // Send,
+  Send,
   // CrossBorder,
   Receive,
   // BuyBitcoin,
