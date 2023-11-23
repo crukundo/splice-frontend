@@ -7,8 +7,8 @@ import type { SnackbarKey } from 'notistack';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 
 import useNotifications from '@/store/notifications';
+import { toast } from '@/components/ui/use-toast';
 
-// TODO: this should be a custom hook :)
 function SW() {
   const [, notificationsActions] = useNotifications();
   const notificationKey = useRef<SnackbarKey | null>(null);

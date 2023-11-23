@@ -26,7 +26,7 @@ function SpliceQrCode({ invoice, amount, currency, size }: Props) {
 
   return (
     <div className='flex flex-col justify-center items-center'>
-      <h3 className="font-semibold tracking-tight text-4xl my-4">{currency} {amount}</h3>
+      <h3 className="font-semibold font-mono tracking-tight text-4xl my-4">{currency} {amount.toLocaleString()}</h3>
         <QRCode className='mb-3' value={invoice} size={size} />
     </div>
   );

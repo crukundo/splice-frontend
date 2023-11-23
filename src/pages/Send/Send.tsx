@@ -4,9 +4,7 @@ import Lottie from 'lottie-react';
 
 import Meta from '@/components/Meta';
 import SpliceQrCode from '@/components/QRCode';
-import { FullSizeAtopFlexBox } from '@/components/styled';
 import { apiUrl, storedWallet } from '@/config';
-import useNotifications from '@/store/notifications';
 import {
   CreateInvoiceRequestBody,
   CreateInvoiceResponse,
@@ -17,16 +15,23 @@ import {
 import successfulTransaction from '@/assets/lottie/success-transaction.json';
 import { DashboardShell } from '@/components/shell';
 import { DashboardHeader } from '@/components/header';
-import { Card, CardDescription, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Form, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { toast } from '@/components/ui/use-toast';
 import { Icons } from '@/components/icons';
 import useLocalStorage from '@/hooks/use-local-storage';
-import { AtSignIcon } from 'lucide-react';
+import { AtSignIcon, CopyIcon, MoreHorizontalIcon, SendIcon, Share2Icon } from 'lucide-react';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { cn } from '@/lib/utils';
+import { cn, detectCurrencyViaPhone } from '@/lib/utils';
 import { Button, buttonVariants } from '@/components/ui/button';
+import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
+import { AlertDialogTitle } from '@radix-ui/react-alert-dialog';
+import { Input } from '@/components/ui/input';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import sentPaymentsStateStore from '@/store/send';
+import resetApp from '@/lib/reset-app';
 
 function Send() {
   const [sendAmount, setSendAmount] = React.useState(0);
@@ -35,10 +40,11 @@ function Send() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [invoiceResponse, setInvoiceResponse] = React.useState<CreateInvoiceResponse | null>(null);
   const [payResponse, setPayResponse] = React.useState<PayInvoiceResponse | null>(null);
-  const [isConfirmationOpen, setIsConfirmationOpen] = React.useState(false);
+  const [showConfirmationDialog, setShowConfirmationDialog] = React.useState(false);
   const form = useForm()
   const defaultWallet = {id: "95b650d2-8fa1-4b6c-a341-0e0ba2f4f041", lightning_address: "0769950599@splice.africa", preferred_fiat_currency: "KES", withdrawal_fee: 100, balances: [{amount: 2, currency: "BTC"}, {amount: 324244.4000000001, currency: "KES"}]}
   const [storedValue, ,] = useLocalStorage(storedWallet, defaultWallet)
+  const [sentPaymentsState, setSentPaymentsState] = useRecoilState(sentPaymentsStateStore);
 
   const validateLnAddress = (lnAddress: string) => {
     const addressRegex = /\S+@\S+\.\S+/;
@@ -51,8 +57,10 @@ function Send() {
   };
 
   const handleLnAddressBlur = () => {
-    // Validate the lightning address onBlur
-    setIsAddressValid(validateLnAddress(remoteLnAddress));
+    if (remoteLnAddress.trim() !== '') {
+      // Validate the lightning address onBlur
+      setIsAddressValid(validateLnAddress(remoteLnAddress));
+    }
   };
 
   const handleAmount = (event: any) => {
@@ -62,14 +70,16 @@ function Send() {
 
   const localWallet = storedValue;
 
+  const remoteFiatCurrency = detectCurrencyViaPhone(remoteLnAddress.split("@")[0])
+
   const handleRequestInvoice = async () => {
-    setIsConfirmationOpen(false);
+    setShowConfirmationDialog(false);
     setIsLoading(true);
     const payload: CreateInvoiceRequestBody = {
-      walletId: localWallet,
+      walletId: localWallet.id,
       destionationAddress: remoteLnAddress,
       amount: sendAmount,
-      currency: 'NGN',
+      currency: remoteFiatCurrency || 'NGN',
     };
 
     try {
@@ -82,8 +92,11 @@ function Send() {
       });
 
       if (!response.ok) {
-        // @todo: show as an alert or notification
-        throw new Error('Failed to generate invoice');
+        return toast({
+          title: "Something went wrong.",
+          description: "Splice couldn't generate an invoice. Please try again.",
+          variant: "destructive",
+        })
       }
 
       await response.json().then((data) => {
@@ -96,14 +109,6 @@ function Send() {
     }
   };
 
-  const handleConfirmationPress = () => {
-    setIsConfirmationOpen(true);
-  };
-
-  const handleConfirmationClose = () => {
-    setIsConfirmationOpen(false);
-  };
-
   const handleCopyInvoice = () => {
     navigator.clipboard.writeText(invoiceResponse?.invoice || '');
     return toast({
@@ -112,28 +117,28 @@ function Send() {
     })
   };
 
-  const handleCopyProof = () => {
-    navigator.clipboard.writeText(payResponse?.proofOfPayment || '');
-    return toast({
-      title: "Copied",
-      description: "The transaction ID is on your clipboard",
-    })
-  };
+  // const handleCopyProof = () => {
+  //   navigator.clipboard.writeText(payResponse?.proofOfPayment || '');
+  //   return toast({
+  //     title: "Copied",
+  //     description: "The transaction ID is on your clipboard",
+  //   })
+  // };
 
-  const handleShareProof = (event: any) => {
-    event.preventDefault();
-    if (navigator.share) {
-      navigator
-        .share({
-          title: 'Splice proof of payment',
-          text: payResponse?.proofOfPayment,
-        })
-        .then(() => {
-          console.log('Shared!');
-        })
-        .catch(console.error);
-    }
-  };
+  // const handleShareProof = (event: any) => {
+  //   event.preventDefault();
+  //   if (navigator.share) {
+  //     navigator
+  //       .share({
+  //         title: 'Splice proof of payment',
+  //         text: payResponse?.proofOfPayment,
+  //       })
+  //       .then(() => {
+  //         console.log('Shared!');
+  //       })
+  //       .catch(console.error);
+  //   }
+  // };
 
   const handlePayInvoice = async () => {
     setIsLoading(true);
@@ -164,7 +169,8 @@ function Send() {
 
       await response.json().then((data) => {
         console.log('payInvoiceRes: ', data);
-        setPayResponse(data);
+        setPayResponse(data)
+        setSentPaymentsState([...sentPaymentsState, data]);
       });
       setIsLoading(false);
     } catch (error: any) {
@@ -201,13 +207,34 @@ function Send() {
     return avatar;
   };
 
-  const iconColor = isAddressValid ? 'text-green-500 dark:text-green-500' : 'text-gray-500 dark:text-black-500'
+  let iconColor = 'text-gray-500 dark:text-black-500';
+
+  if (!isAddressValid) {
+    iconColor = 'text-red-500 dark:text-red-500';
+  } else if (isAddressValid) {
+    iconColor = 'text-green-500 dark:text-green-500';
+  }
+
+  const handleShareInvoice = (event: any) => {
+    event.preventDefault();
+    if (navigator.share) {
+      navigator
+        .share({
+          title: `Invoice for ${sendAmount} ${invoiceResponse?.currency}`,
+          text: invoiceResponse?.invoice,
+        })
+        .then(() => {
+          console.log('Shared!');
+        })
+        .catch(console.error);
+    }
+  };
 
   return (
     <>
       <Meta title="Send money" />
       <DashboardShell>
-        <DashboardHeader heading="Send money" text="Send money across Africa. Lightning fast ⚡"></DashboardHeader>
+        <DashboardHeader heading="Send money" text="Send money across Africa. Lightning fast"></DashboardHeader>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
             <Card className="col-span-3">
                 <CardHeader>
@@ -215,83 +242,207 @@ function Send() {
                 </CardHeader>
                 <CardContent>
                   <Form {...form}>
-                    <form>
-                        <FormField
-                          control={form.control}
-                          name="sendAmount"
-                          render={({ field }) => (
-                            <FormItem>
-                               <FormLabel htmlFor="email">{`Amount to send in ${localWallet.preferred_fiat_currency}`}</FormLabel>
-                                <div className="relative rounded-lg shadow-lg">
-                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                  {getCurrencyIcon(localWallet.preferred_fiat_currency)}
-                                  </span>
-                                  <input
-                                    type="text"
-                                    className="block w-full text-gray-500 dark:text-black-500 py-4 pl-20 pr-4 text-3xl leading-8 rounded-lg transition duration-150 ease-in-out focus:outline-none"
-                                    placeholder="0.00"
-                                    onChange={handleAmount}
-                                  />
-                                </div>
-                              {sendAmount > 0 && <FormDescription>{`Also equivalent to ${(sendAmount * 100000000).toLocaleString()} sats`}</FormDescription>}
-                              <FormMessage />
-                            </FormItem>
-                          )}
+                    <FormField
+                      control={form.control}
+                      name="lnAddress"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel htmlFor="email">Receiving agent's Splice address</FormLabel>
+                            <div className="relative rounded-lg shadow-lg">
+                              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                              <AtSignIcon className={`h-8 w-8 ${iconColor}`} />
+                              </span>
+                              <input
+                                type="email"
+                                className="block w-full text-gray-500 dark:text-black-500 py-4 pl-14 pr-4 text-xl leading-8 rounded-lg transition duration-150 ease-in-out focus:outline-none"
+                                placeholder=" 254701234567@splice.africa"
+                                onChange={handleLnAddress}
+                                onBlur={handleLnAddressBlur}
+                                value={remoteLnAddress}
+                                disabled={isLoading || payResponse !== null}
+                              />
+                            </div>
+                            {!isAddressValid && <FormDescription>Invalid lightning address</FormDescription>}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="sendAmount"
+                      render={({ field }) => (
+                        <FormItem className='pt-4'>
+                            <FormLabel htmlFor="email">{`Amount to send in ${localWallet.preferred_fiat_currency}`}</FormLabel>
+                            <div className="relative rounded-lg shadow-lg">
+                              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                              {getCurrencyIcon(localWallet.preferred_fiat_currency)}
+                              </span>
+                              <input
+                                type="text"
+                                className="block w-full text-gray-500 dark:text-black-500 py-4 pl-20 pr-4 text-3xl leading-8 rounded-lg transition duration-150 ease-in-out focus:outline-none"
+                                onChange={handleAmount}
+                                value={sendAmount === 0 ? sendAmount.toFixed(2) : sendAmount}
+                                disabled={isLoading || payResponse !== null}
+                              />
+                            </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="grid gap-2 pt-5">
+                      <Button
+                        variant='outline'
+                        onClick={handleRequestInvoice}
+                        className={cn(buttonVariants())}
+                        disabled={isLoading || !sendAmount || !remoteLnAddress || !!invoiceResponse}
+                      >
+                        {isLoading && (
+                          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                        )}
+                        Request invoice
+                      </Button>
+                    </div>
+                    {invoiceResponse && payResponse === null && (
+                    <div className="grid gap-2 pt-5">
+                      <SpliceQrCode
+                          invoice={invoiceResponse.invoice}
+                          amount={sendAmount}
+                          currency={invoiceResponse.currency}
+                          size={250}
                         />
-                        <FormField
-                          control={form.control}
-                          name="lnAddress"
-                          render={({ field }) => (
-                            <FormItem className='pt-4'>
-                              <FormLabel htmlFor="email">Agent's lightning address</FormLabel>
-                                <div className="relative rounded-lg shadow-lg">
-                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                  <AtSignIcon className={`h-8 w-8 ${iconColor}`} />
-                                  </span>
-                                  <input
-                                    type="email"
-                                    className="block w-full text-gray-500 dark:text-black-500 py-4 pl-14 pr-4 text-xl leading-8 rounded-lg transition duration-150 ease-in-out focus:outline-none"
-                                    placeholder=""
-                                    onChange={handleLnAddress}
-                                    onBlur={handleLnAddressBlur}
-                                  />
-                                </div>
-                              {remoteLnAddress && <FormDescription>{!isAddressValid  ? 'Invalid lightning address' : 'e.g rukundo@splice.africa'}</FormDescription>}
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <div className="grid gap-2 pt-5">
-                          <Button
-                            variant='secondary'
-                            onClick={handleConfirmationPress}
-                            className={cn(buttonVariants())}
-                            disabled={isLoading || !sendAmount || !remoteLnAddress || !!invoiceResponse}
-                            type="submit"
-                          >
-                            {isLoading && (
-                              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                            )}
-                            Continue
+
+                        <p className='font-xs font-mono text-center'>Total Fee: {invoiceResponse.amount.toLocaleString()} {invoiceResponse.currency}</p>
+                        <div className="flex space-x-2 mt-4">
+                          <Input value={invoiceResponse.invoice} readOnly />
+                          <Button size="sm" variant="secondary" className="shrink-0" onClick={handleCopyInvoice}>
+                            <CopyIcon className="mr-2 h-4 w-4" /> Copy
+                          </Button>
+                          <Button size="sm" variant="secondary" className="shrink-0" onClick={handleShareInvoice}>
+                            <Share2Icon className="mr-2 h-4 w-4" /> Share
                           </Button>
                         </div>
-                    </form>
+
+                        <div className="grid gap-2 pt-5">
+                      <Button
+                        onClick={() => setShowConfirmationDialog(true)}
+                        className={cn(buttonVariants())}
+                        size="lg"
+                      >
+                        {isLoading && (
+                          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                        )}
+                        Send {invoiceResponse.amount.toLocaleString()} {invoiceResponse.currency}
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setPayResponse(null);
+                          setInvoiceResponse(null);
+                          setRemoteLnAddress('');
+                          setSendAmount(0);
+                        }}
+                        variant="ghost">Cancel</Button>
+                    </div>
+                    </div>
+                    )}
+                    {payResponse && (
+                    <div className="grid gap-2 pt-5">
+                      <Lottie
+                      animationData={successfulTransaction}
+                      loop={false}
+                      style={{ height: 200 }}
+                      />
+                      <h4 className='text-center py-3 text-green-500 dark:text-green-500'>Payment sent</h4>
+                      <Button
+                        onClick={() => {
+                          setPayResponse(null);
+                          setInvoiceResponse(null);
+                          setRemoteLnAddress('');
+                          setSendAmount(0);
+                        }}
+                        variant="link">Make Another Payment?</Button>
+                    </div>
+                    )}
                 </Form>
               </CardContent>
             </Card>
             <Card className="col-span-3">
               <CardHeader>
-                <div className="flex items-center space-x-2">
-                  <CardTitle>QR Code</CardTitle>
-                  {isLoading && <Icons.spinner className='h-4 w-4 animate-spin' />}
-                </div>
-                <CardDescription>Show this QR code to a Splice agent near you</CardDescription>
+                <CardTitle>Sent payments</CardTitle>
               </CardHeader>
-              <CardContent className='items-center space-x-1 text-sm text-muted-foreground'>
-                
+              <CardContent className='pt-5'>
+              {sentPaymentsState.length === 0 ? (
+                  <p className="text-xs">There are no payments at this time.</p>
+                ) : (
+                  <div className="space-y-8">
+                    {sentPaymentsState.map((tx: PayInvoiceResponse, index: any) => (
+                      <div key={index} className="flex items-center">
+                        <Avatar className="h-9 w-9">
+                          <SendIcon className='text-green-500 dark:text-green-500' />
+                        </Avatar>
+                        <div className="ml-4 space-y-1">
+                          <p className="text-sm font-medium leading-none">{tx.destinationAddress}</p>
+                          <p className="text-sm text-muted-foreground truncate w-60">
+                            {tx.proofOfPayment}
+                          </p>
+                        </div>
+                        <div className="ml-auto font-medium">{tx.amount.toLocaleString()} {tx.currency}</div>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0 ml-5">
+                              <span className="sr-only">Open menu</span>
+                              <MoreHorizontalIcon className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => {
+                                navigator.clipboard.writeText(tx.proofOfPayment)
+                                return toast({
+                                  title: "Copied",
+                                  description: "The transaction ID is on your clipboard",
+                                })
+                              }}
+                            >
+                              Copy proof
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              {/* <div className="space-y-8">
+                <div className="flex items-center">
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage src="/avatars/01.png" alt="Avatar" />
+                    <AvatarFallback>OM</AvatarFallback>
+                  </Avatar>
+                  <div className="ml-4 space-y-1">
+                    <p className="text-sm font-medium leading-none">Olivia Martin</p>
+                    <p className="text-sm text-muted-foreground">
+                      olivia.martin@email.com
+                    </p>
+                  </div>
+                  <div className="ml-auto font-medium">+$1,999.00</div>
+                </div>
+              </div> */}
               </CardContent>
             </Card>
           </div>
+          <AlertDialog open={showConfirmationDialog} onOpenChange={setShowConfirmationDialog}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                {`You would like to send ${invoiceResponse?.amount.toLocaleString()} ${invoiceResponse?.currency} to ${remoteLnAddress}?`}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handlePayInvoice}>Yes</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
       </DashboardShell>
     </>
   );

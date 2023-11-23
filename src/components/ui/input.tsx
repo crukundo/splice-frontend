@@ -45,6 +45,8 @@ const MobileInput = React.forwardRef<HTMLInputElement, MobileInputProps>(
   )
 )
 
+// Create custom inputs for Large amount, small amount (with currency prop) and lightning address with @ preAddon
+
 MobileInput.displayName = "Mobile Input"
 
 export { Input, MobileInput }
