@@ -10,30 +10,24 @@ import { useNavigate } from 'react-router-dom';
 import useLocalStorage from '@/hooks/use-local-storage';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from '@/components/ui/use-toast';
+import { useRecoilState } from 'recoil';
+import transactionsStateStore from '@/store/transactions';
+import { MoreHorizontalIcon, SendIcon } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 
 function Wallet() {
   const [userWallet, setUserWallet] = useState<WalletRequestResponse | null>(null);
-  const [userTransactions, setUserTransactions] = useState<[] | null>(null);
+  const [userTransactions, setUserTransactions] = useState<WalletTransactionsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const defaultWallet = {id: "95b650d2-8fa1-4b6c-a341-0e0ba2f4f041", lightning_address: "0769950599@splice.africa", preferred_fiat_currency: "KES", withdrawal_fee: 100, balances: [{amount: 2, currency: "BTC"}, {amount: 324244.4000000001, currency: "KES"}]}
-  const [storedValue, ,] = useLocalStorage(storedWallet, defaultWallet)
-  console.log("storedValue: ", storedValue);
-  useEffect(() => {
-    if (!storedValue) {
-      navigate('/');
-      toast({
-        title: "Something went wrong.",
-        description: "We couldn't find your wallet. Please refresh",
-        variant: "destructive",
-      })
-    }
-  }, [storedWallet]);
+  const [storedValue, ,] = useLocalStorage(storedWallet, {})
+  const [transactionsState, setTransactionsState] = useRecoilState(transactionsStateStore);
 
-  const getUserWallet = async () => {
+  const getUserWallet = async (walletId: string) => {
     try {
       setLoading(true);
-      const response = await fetch(`${apiUrl}/wallets/${storedValue.id}`, {
+      const response = await fetch(`${apiUrl}/wallets/${walletId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +35,7 @@ function Wallet() {
       });
 
       if (!response.ok) {
-        return toast({
+        toast({
           title: "Something went wrong.",
           description: "We couldn't find your wallet. Please refresh.",
           variant: "destructive",
@@ -58,10 +52,10 @@ function Wallet() {
     }
   };
 
-  const getUserTransactions = async () => {
+  const getUserTransactions = async (walletId: string) => {
     try {
       setLoading(true);
-      const response = await fetch(`${apiUrl}/payments/${storedValue.id}`, {
+      const response = await fetch(`${apiUrl}/payments/${walletId}/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +63,7 @@ function Wallet() {
       });
 
       if (!response.ok) {
-        return toast({
+        toast({
           title: "Something went wrong.",
           description: "Having trouble getting your transactions. Please refresh.",
           variant: "destructive",
@@ -77,8 +71,8 @@ function Wallet() {
       }
 
       const transactionsData: WalletTransactionsResponse = await response.json();
-      console.log("wallet transactions: ", transactionsData.payments)
-      setUserTransactions(transactionsData.payments);
+      setUserTransactions(transactionsData)
+      setTransactionsState([...transactionsState, transactionsData]);
       setLoading(false);
       return transactionsData;
     } catch (error: any) {
@@ -87,18 +81,24 @@ function Wallet() {
   };
 
   useEffect(() => {
-    if (storedWallet) {
-      getUserWallet();
-      getUserTransactions();
-    } else {
-      navigate('/');
-      toast({
-        title: "Something went wrong.",
-        description: "We couldn't find your wallet. Please refresh.",
-        variant: "destructive",
-      })
-    }
-  }, [storedWallet]);
+    const fetchData = async () => {
+      if (storedValue) {
+        const foundWallet = JSON.parse(storedValue);
+  
+        try {
+          const [foundWalletData, foundTransactionsData] = await Promise.all([
+            getUserWallet(foundWallet.id),
+            getUserTransactions(foundWallet.id),
+          ]);
+     
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+    };
+  
+    fetchData();
+  }, [storedValue]);
 
   const WalletBalanceCard = () => {
     const balances = userWallet?.balances;
@@ -182,6 +182,8 @@ function Wallet() {
     )
   }
 
+  const payments = transactionsState[0]?.payments || [];
+
   return (
     <>
       <Meta title="Wallet &amp; Transactions" />
@@ -199,21 +201,15 @@ function Wallet() {
                 <CardTitle>Transaction History</CardTitle>
               </CardHeader>
               <CardContent>
-              {/* <div className="space-y-8">
-                <div className="flex items-center">
-                  <Avatar className="h-9 w-9">
-                    <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                    <AvatarFallback>OM</AvatarFallback>
-                  </Avatar>
-                  <div className="ml-4 space-y-1">
-                    <p className="text-sm font-medium leading-none">Olivia Martin</p>
-                    <p className="text-sm text-muted-foreground">
-                      olivia.martin@email.com
-                    </p>
-                  </div>
-                  <div className="ml-auto font-medium">+$1,999.00</div>
-                </div>
-              </div> */}
+                {payments.length === 0 ? (
+                    <p className="text-xs">Your history will show up here once you make your first transaction.</p>
+                  ) : (
+                    <div className="space-y-8">
+                      {payments.map((payment, index: any) => (
+                        <p key={index}> {payment.id}</p>
+                      ))}
+                    </div>
+                  )}
               </CardContent>
             </Card>
           </div>

@@ -3,19 +3,12 @@ import { PathRouteProps } from 'react-router-dom';
 
 import type { SvgIconProps } from '@mui/material/SvgIcon';
 
-enum AuthPages {
-  CreateNewWallet,
-}
-
 enum Pages {
-  // Welcome,
+  Welcome,
+  CreateNewWallet,
   Wallet,
   Send,
-  // CrossBorder,
   Receive,
-  // BuyBitcoin,
-  // SellBitcoin,
-  // NotFound,
 }
 
 type PathRouteCustomProps = {
@@ -26,7 +19,5 @@ type PathRouteCustomProps = {
 
 type Routes = Record<Pages, PathRouteProps & PathRouteCustomProps>;
 
-type AuthRoutes = Record<AuthPages, PathRouteProps & PathRouteCustomProps>;
-
-export type { Routes, AuthRoutes };
-export { Pages, AuthPages };
+export type { Routes };
+export { Pages };

@@ -19,6 +19,8 @@ import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import PhoneInput from 'react-phone-input-2';
 import { toast } from '@/components/ui/use-toast';
+import { AuthShell } from '@/components/auth-shell';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 
 interface CreateNewWalletProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -116,31 +118,30 @@ function CreateNewWallet({
 
   return (
     <>
-      <Meta title="Create a new wallet" />
-      <div className="container flex h-screen w-screen flex-col items-center justify-center">
+    <Meta title="Create a new wallet" />
+    <AuthShell>
+    <div className="container grid h-screen w-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
       <Link
-        to="/"
+        to="/login"
         className={cn(
           buttonVariants({ variant: "ghost" }),
-          "absolute left-4 top-4 md:left-8 md:top-8"
+          "absolute right-4 top-4 md:right-8 md:top-8"
         )}
       >
-        <>
-          <Icons.chevronLeft className="mr-2 h-4 w-4" />
-          Back
-        </>
+        Login
       </Link>
-      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-        <div className="flex flex-col space-y-2 text-center">
-          <Icons.logo className="mx-auto h-6 w-6" />
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Welcome back
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Enter your wallet id to access your wallet
-          </p>
-        </div>
-        <div className={cn("grid", className)} {...props}>
+      <div className="hidden h-full bg-muted lg:block" />
+      <div className="lg:p-8">
+        <div className="mx-auto flex w-full flex-col justify-center space-y-2 sm:w-[400px]">
+          <div className="flex flex-col space-y-2 text-center">
+            <Icons.logo className="mx-auto h-6 w-6" />
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Create a wallet
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Get started in under 60 seconds
+            </p>
+          </div>
           <Form {...form}>
             <form>
               <FormField
@@ -152,11 +153,11 @@ function CreateNewWallet({
                     <FormMessage />
                     <RadioGroup
                       onValueChange={handleChosenCountry}
-                      className="grid max-w-md grid-cols-2 gap-8 pt-2"
+                      className="grid max-w-md grid-cols-3 gap-3 pt-2"
                     >
                       {allowedCountries.map((country) => (
                         <FormItem key={country.code}>
-                          <FormLabel className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                          <FormLabel className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
                             <FormControl>
                               <RadioGroupItem
                                 value={country.code}
@@ -165,7 +166,7 @@ function CreateNewWallet({
                             </FormControl>
                             <Avatar className="mb-2">
                               <AvatarImage
-                                src={`https://flagcdn.com/56x42/${country.code.toLowerCase()}.png`}
+                                src={`src/assets/${country.code.toLowerCase()}.png`}
                                 alt={country.label}
                               />
                             </Avatar>
@@ -174,7 +175,6 @@ function CreateNewWallet({
                         </FormItem>
                       ))}
                     </RadioGroup>
-                    <FormDescription>My country is not listed</FormDescription>
                   </FormItem>
                 )}
               />
@@ -228,7 +228,7 @@ function CreateNewWallet({
                 />
               )}
 
-              <div className="grid gap-2">
+              <div className="grid py-4">
                 <Button
                   onClick={onPressContinue}
                   className={cn(buttonVariants())}
@@ -245,17 +245,18 @@ function CreateNewWallet({
               </div>
             </form>
           </Form>
-      </div>
-        <p className="px-8 text-center text-sm text-muted-foreground">
-          <Link
-            to="/create-wallet"
-            className="hover:text-brand underline underline-offset-4"
-          >
-            Don&apos;t have a wallet? Create one here
-          </Link>
-        </p>
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <Button className='font-normal text-sm' variant="link">I can't see my country 😥</Button>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-80">
+                <p className="text-sm">We'll have an update on coverage soon</p>
+            </HoverCardContent>
+          </HoverCard>
+        </div>
       </div>
     </div>
+    </AuthShell>
     </>
   );
 }

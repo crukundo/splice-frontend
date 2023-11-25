@@ -11,6 +11,7 @@ export interface WalletRequestResponse {
   lightning_address: string;
   withdrawal_fee: number;
   balances: BalanceProps[];
+  preferred_fiat_currency: string;
 }
 
 export interface CreateWalletRequestBody {
@@ -97,9 +98,20 @@ export type Wallet = {
   withdrawFee: string
 }
 
-
+export interface PaymentResponse {
+  id: string;
+  amount: number;
+  currency: string;
+  timestamp: string;
+  payment_status: string // enum actually
+  sender_wallet: WalletRequestResponse
+  receiver_wallet: WalletRequestResponse
+  sent_payment: boolean
+  receive_payment: boolean
+  fees: number
+}
 export interface WalletTransactionsResponse {
-  payments: []
+  payments: PaymentResponse[]
 }
 
 export type Notifications = {

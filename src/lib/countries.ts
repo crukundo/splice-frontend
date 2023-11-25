@@ -8,6 +8,7 @@ export interface CountryType {
 export const allowedCountries = [
   { code: 'NG', label: 'Nigeria', phone: '234', currency: 'NGN' },
   { code: 'KE', label: 'Kenya', phone: '254', currency: 'KES' },
+  { code: 'GH', label: 'Ghana', phone: '233', currency: 'GHS' },
 ];
 
 export const countries = [

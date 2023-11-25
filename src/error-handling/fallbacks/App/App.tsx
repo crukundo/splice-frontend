@@ -8,32 +8,38 @@ import Typography from '@mui/material/Typography';
 import { FullSizeCenteredFlexBox } from '@/components/styled';
 import { email, messages } from '@/config';
 import resetApp from '@/lib/reset-app';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Icons } from '@/components/icons';
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { AlertDialogCancel } from '@radix-ui/react-alert-dialog';
+import { useState } from 'react';
 
 function AppErrorBoundaryFallback() {
+  const [showErrorDialog, setShowErrorDialog] = useState<boolean>(true)
+
   return (
-    <Box height={400}>
-      <FullSizeCenteredFlexBox>
-        <Paper sx={{ p: 5 }}>
-          <Typography variant="h5" component="h3">
-            {messages.app.crash.title}
-          </Typography>
-          <Button
-            startIcon={<EmailIcon />}
-            variant="outlined"
-            target="_blank"
-            rel="noreferrer"
-            href={`mailto: ${email}`}
-            sx={{ my: 3 }}
-          >
-            {messages.app.crash.options.email}
-          </Button>
-          <Typography component="h6">or</Typography>
-          <Button startIcon={<RestartIcon />} sx={{ mt: 3 }} variant="outlined" onClick={resetApp}>
-            {messages.app.crash.options.reset}
-          </Button>
-        </Paper>
-      </FullSizeCenteredFlexBox>
-    </Box>
+    <div className="flex min-h-screen flex-col space-y-6">
+      <div className="container grid gap-8">
+      <AlertDialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className='flex'>
+            <Icons.warning className='mr-3' />
+              There's a problem.
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+            Stay calm. There's nothing to worry about. 
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+          <AlertDialogAction onClick={resetApp}>
+            <span>Reload Splice</span>
+          </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+    </div>
   );
 }
 

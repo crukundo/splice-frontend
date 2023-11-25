@@ -1,19 +1,18 @@
 import { atom } from 'recoil';
 
-import { PayInvoiceResponse } from '@/lib/interfaces';
+import { WalletTransactionsResponse } from '@/lib/interfaces';
 import { AtomEffectParams } from '../types';
 
-// Track sent cross border payments for current user
-const sentPaymentsStateStore = atom<PayInvoiceResponse[]>({
-  key: 'sent-payments-state',
+const transactionsStateStore = atom<WalletTransactionsResponse[]>({
+  key: 'transactions-state',
   default: [],
   effects_UNSTABLE: [synchronizeWithLocalStorage],
 });
 
 
 function synchronizeWithLocalStorage({ setSelf, onSet }: AtomEffectParams) {
-  const storedSentPayments = localStorage.getItem('sent-payments-state');
-  const existingData: PayInvoiceResponse[] = storedSentPayments ? JSON.parse(storedSentPayments) : [];
+  const storedHistory= localStorage.getItem('transactions-state');
+  const existingData: WalletTransactionsResponse[] = storedHistory ? JSON.parse(storedHistory) : [];
 
   // No timestamp so reversing the existing data array to ensure the most recent item is at the top
   existingData.reverse(); 
@@ -25,9 +24,9 @@ function synchronizeWithLocalStorage({ setSelf, onSet }: AtomEffectParams) {
 
     // No timestamp so reversing the existing data array to ensure the most recent item is at the top
     mergedData.reverse();
-    localStorage.setItem('sent-payments-state', JSON.stringify(mergedData));
+    localStorage.setItem('transactions-state', JSON.stringify(mergedData));
   });
 }
 
 
-export default sentPaymentsStateStore;
+export default transactionsStateStore;

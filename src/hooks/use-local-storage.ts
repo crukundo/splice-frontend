@@ -1,61 +1,36 @@
 import { useEffect, useState } from "react"
 
-const isServer = typeof window === "undefined"
-
 const useLocalStorage = (key: string, initialValue: any) => {
   // State to store our value
-  // Pass initial state function to useState so logic is only executed once
-  const [storedValue, setStoredValue] = useState(() => initialValue)
-
-  const initialize = () => {
-    if (isServer) {
-      return initialValue
-    }
+  const [storedValue, setStoredValue] = useState(() => {
     try {
       // Get from local storage by key
-      const item = window.localStorage.getItem(key)
-      // Parse stored json or if none return initialValue
-      return item ? JSON.parse(item) : initialValue
+      const item = window.localStorage.getItem(key);
+      // Parse stored JSON or return initialValue
+      return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      // If error also return initialValue
-      console.log(error)
-      return initialValue
+      // Handle any errors gracefully
+      console.error('Error initializing localStorage:', error);
+      return initialValue;
     }
-  }
+  });
 
-  /* prevents hydration error so that state is only initialized after server is defined */
-  useEffect(() => {
-    if (!isServer) {
-      setStoredValue(initialize())
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // Return a wrapped version of useState's setter function that ...
-  // ... persists the new value to localStorage.
+  // Return a wrapped version of useState's setter function that persists the new value to localStorage
   const setValue = (value: any) => {
     try {
-      // Allow value to be a function so we have same API as useState
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value
+      // Allow value to be a function so we have the same API as useState
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
       // Save state
-      setStoredValue(valueToStore)
+      setStoredValue(valueToStore);
       // Save to local storage
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore))
-      }
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {
-      // A more advanced implementation would handle the error case
-      console.log(error)
+      // Handle any errors gracefully
+      console.error('Error updating localStorage:', error);
     }
-  }
+  };
 
-  // Function to get the stored value without setting it
-  const getValue = () => {
-    return storedValue
-  }
+  return [storedValue, setValue];
+};
 
-  return [storedValue, setValue, getValue]
-}
-
-export default useLocalStorage
+export default useLocalStorage;

@@ -1,17 +1,10 @@
 import { useCallback, useEffect, useRef } from 'react';
-
-import Alert from '@mui/material/Alert';
-import Button from '@mui/material/Button';
-
-import type { SnackbarKey } from 'notistack';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 
-import useNotifications from '@/store/notifications';
 import { toast } from '@/components/ui/use-toast';
+import { ToastAction } from '@/components/ui/toast';
 
 function SW() {
-  const [, notificationsActions] = useNotifications();
-  const notificationKey = useRef<SnackbarKey | null>(null);
   const {
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
@@ -22,35 +15,25 @@ function SW() {
     setOfflineReady(false);
     setNeedRefresh(false);
 
-    if (notificationKey.current) {
-      notificationsActions.close(notificationKey.current);
-    }
-  }, [setOfflineReady, setNeedRefresh, notificationsActions]);
+  }, [setOfflineReady, setNeedRefresh]);
 
   useEffect(() => {
     if (offlineReady) {
-      notificationsActions.push({
-        options: {
-          autoHideDuration: 4500,
-          content: <Alert severity="success">App is ready to work offline.</Alert>,
-        },
-      });
+      toast({
+        title: "Offline mode",
+        description: "Splice is ready to work offline.",
+      })
     } else if (needRefresh) {
-      notificationKey.current = notificationsActions.push({
-        message: 'Splice was just updated! Hit reload',
-        options: {
-          variant: 'warning',
-          persist: true,
-          action: (
-            <>
-              <Button onClick={() => updateServiceWorker(true)}>Reload</Button>
-              <Button onClick={close}>Close</Button>
-            </>
-          ),
-        },
-      });
+     
+      toast({
+        title: "Freshly squeezed!",
+        description: "Splice was just updated! Reload",
+        action: (
+          <ToastAction altText="Update">Reload</ToastAction>
+        ),
+      })
     }
-  }, [close, needRefresh, offlineReady, notificationsActions, updateServiceWorker]);
+  }, [close, needRefresh, offlineReady, updateServiceWorker]);
 
   return null;
 }

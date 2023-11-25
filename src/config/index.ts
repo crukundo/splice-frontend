@@ -17,8 +17,8 @@ const messages = {
     crash: {
       title: 'Oooops... Sorry, I guess, something went wrong. You can:',
       options: {
-        email: `contact with author by this email - ${email}`,
-        reset: 'Press here to reset the application',
+        email: `contact us on this email - ${email}`,
+        reset: 'press here to reset the application',
       },
     },
   },
@@ -58,6 +58,10 @@ const giphy404 = 'https://giphy.com/embed/xTiN0L7EW5trfOvEk0';
 
 const dashboardConfig: DashboardConfig = {
   mainNav: [
+    {
+      title: "Welcome",
+      href: "/",
+    },
     {
       title: "FAQ",
       href: "/faq",

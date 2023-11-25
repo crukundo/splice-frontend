@@ -1,10 +1,4 @@
 import {
-  CallReceived,
-  CurrencyBitcoin,
-  CurrencyBitcoinRounded,
-  CurrencyBitcoinTwoTone,
-  CurrencyExchange,
-  CurrencyExchangeRounded,
   Receipt,
   Send,
   Wallet,
@@ -12,22 +6,17 @@ import {
 
 import asyncComponentLoader from '@/lib/loader';
 
-import { AuthPages, Pages, Routes } from './types';
-
-const authRoutes = {
-  [AuthPages.CreateNewWallet]: {
-    component: asyncComponentLoader(() => import('@/pages/CreateWallet')),
-    path: '/create',
-  },
-}
+import { Pages, Routes } from './types';
 
 const routes: Routes = {
-  // [Pages.Welcome]: {
-  //   component: asyncComponentLoader(() => import('@/pages/Welcome')),
-  //   path: '/',
-  //   // title: 'Welcome',
-  //   // icon: Home,
-  // },
+  [Pages.Welcome]: {
+    component: asyncComponentLoader(() => import('@/pages/Welcome')),
+    path: '/',
+  },
+  [Pages.CreateNewWallet]: {
+    component: asyncComponentLoader(() => import('@/pages/CreateWallet')),
+    path: '/create-wallet',
+  },
   [Pages.Wallet]: {
     component: asyncComponentLoader(() => import('@/pages/Wallet')),
     path: '/wallet',
@@ -40,34 +29,16 @@ const routes: Routes = {
     title: 'Send',
     icon: Send,
   },
-  // [Pages.CrossBorder]: {
-  //   component: asyncComponentLoader(() => import('@/pages/Send/CrossBorder')),
-  //   path: '/send/cross',
-  //   // title: 'Cross Border Settlement',
-  //   // icon: Code,
-  // },
   [Pages.Receive]: {
     component: asyncComponentLoader(() => import('@/pages/Receive')),
     path: '/receive',
     title: 'Receive',
     icon: Receipt,
   },
-  // [Pages.BuyBitcoin]: {
-  //   component: asyncComponentLoader(() => import('@/pages/BuyBitcoin')),
-  //   path: '/buy-btc',
-  //   title: 'Buy Bitcoin',
-  //   icon: CurrencyBitcoin,
-  // },
-  // [Pages.SellBitcoin]: {
-  //   component: asyncComponentLoader(() => import('@/pages/SellBitcoin')),
-  //   path: '/sell-btc',
-  //   title: 'Sell Bitcoin',
-  //   icon: CurrencyBitcoinTwoTone,
-  // },
   // [Pages.NotFound]: {
   //   component: asyncComponentLoader(() => import('@/pages/NotFound')),
   //   path: '*',
   // },
 };
 
-export {routes, authRoutes};
+export {routes};
