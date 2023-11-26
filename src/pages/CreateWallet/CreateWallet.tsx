@@ -106,8 +106,7 @@ function CreateNewWallet({
           preferred_fiat_currency: data.preferred_fiat_currency,
         }
 
-        const serializedWalletData = JSON.stringify(walletData)
-        setValue(serializedWalletData)
+        setValue(walletData)
       });
       setIsLoading(false);
       navigate('/wallet');

@@ -1,32 +1,32 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import { GlobalStorage } from "@/store/globalStorage";
 
 const useLocalStorage = (key: string, initialValue: any) => {
-  // State to store our value
-  const [storedValue, setStoredValue] = useState(() => {
-    try {
-      // Get from local storage by key
-      const item = window.localStorage.getItem(key);
-      // Parse stored JSON or return initialValue
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      // Handle any errors gracefully
-      console.error('Error initializing localStorage:', error);
-      return initialValue;
-    }
-  });
 
-  // Return a wrapped version of useState's setter function that persists the new value to localStorage
-  const setValue = (value: any) => {
+  const [storedValue, setStoredValue] = useState(initialValue);
+
+  useEffect(() => {
+    const loadStoredValue = async () => {
+      try {
+        const value = await GlobalStorage.getItem(key);
+        if (value !== null) {
+          setStoredValue(value);
+        }
+      } catch (error) {
+        console.error("Error loading value from spliceDb:", error);
+      }
+    };
+
+    loadStoredValue();
+  }, [key]);
+
+  const setValue = async (value: any) => {
     try {
-      // Allow value to be a function so we have the same API as useState
       const valueToStore = value instanceof Function ? value(storedValue) : value;
-      // Save state
       setStoredValue(valueToStore);
-      // Save to local storage
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      await GlobalStorage.setItem(key, valueToStore);
     } catch (error) {
-      // Handle any errors gracefully
-      console.error('Error updating localStorage:', error);
+      console.error("Error updating value in spliceDb:", error);
     }
   };
 

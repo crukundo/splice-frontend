@@ -1,32 +1,36 @@
 import { atom } from 'recoil';
-
 import { WalletTransactionsResponse } from '@/lib/interfaces';
 import { AtomEffectParams } from '../types';
+import { GlobalStorage } from '../globalStorage';
 
 const transactionsStateStore = atom<WalletTransactionsResponse[]>({
   key: 'transactions-state',
   default: [],
-  effects_UNSTABLE: [synchronizeWithLocalStorage],
+  effects_UNSTABLE: [synchronizeWithLocalForage],
 });
 
+function synchronizeWithLocalForage({ setSelf, onSet }: AtomEffectParams) {
+  // Use localForage to get the data
+  GlobalStorage.getItem<WalletTransactionsResponse>('transactions-state')
+    .then((existingData) => {
+      if (existingData) {
+        setSelf(existingData);
+      }
+    })
+    .catch((error) => {
+      console.error('Error loading data from LocalForage:', error);
+    });
 
-function synchronizeWithLocalStorage({ setSelf, onSet }: AtomEffectParams) {
-  const storedHistory= localStorage.getItem('transactions-state');
-  const existingData: WalletTransactionsResponse[] = storedHistory ? JSON.parse(storedHistory) : [];
+  onSet((newValue: WalletTransactionsResponse) => {
+    // Reverse the newValue array to ensure the most recent item is at the top
+    newValue;
 
-  // No timestamp so reversing the existing data array to ensure the most recent item is at the top
-  existingData.reverse(); 
-  setSelf(existingData);
-
-
-  onSet((newValue: string) => {
-    const mergedData = [...existingData, ...newValue];
-
-    // No timestamp so reversing the existing data array to ensure the most recent item is at the top
-    mergedData.reverse();
-    localStorage.setItem('transactions-state', JSON.stringify(mergedData));
+    // Use localForage to set the data
+    GlobalStorage.setItem('transactions-state', newValue)
+      .catch((error) => {
+        console.error('Error storing data in LocalForage:', error);
+      });
   });
 }
-
 
 export default transactionsStateStore;

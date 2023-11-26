@@ -304,7 +304,7 @@ function Send() {
                     {sentPaymentsState.map((tx: PayInvoiceResponse, index: any) => (
                       <div key={index} className="flex items-center">
                         <Avatar className="h-9 w-9">
-                          <SendIcon className='text-green-500 dark:text-green-500' />
+                          <SendIcon className='text-red-500 dark:text-red-500' />
                         </Avatar>
                         <div className="ml-4 space-y-1">
                           <p className="text-sm font-medium leading-none">{tx.destinationAddress}</p>

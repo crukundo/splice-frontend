@@ -3,8 +3,8 @@ import { DashboardShell } from '@/components/shell';
 import { DashboardHeader } from '@/components/header';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { useEffect, useState } from 'react';
-import { BalanceProps, WalletRequestResponse, WalletTransactionsResponse } from '@/lib/interfaces';
+import { memo, useEffect, useState } from 'react';
+import { BalanceProps, PaymentResponse, WalletRequestResponse, WalletTransactionsResponse } from '@/lib/interfaces';
 import { apiUrl, storedWallet } from '@/config';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorage from '@/hooks/use-local-storage';
@@ -12,16 +12,16 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from '@/components/ui/use-toast';
 import { useRecoilState } from 'recoil';
 import transactionsStateStore from '@/store/transactions';
-import { MoreHorizontalIcon, SendIcon } from 'lucide-react';
+import { ArrowDownRightIcon, ArrowUpRightIcon, MoreHorizontalIcon, SendIcon } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import { formatDate, formatRelativeTime } from '@/lib/utils';
 
 function Wallet() {
   const [userWallet, setUserWallet] = useState<WalletRequestResponse | null>(null);
-  const [userTransactions, setUserTransactions] = useState<WalletTransactionsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [storedValue, ,] = useLocalStorage(storedWallet, {})
+  const [storedValue, ] = useLocalStorage(storedWallet, {})
   const [transactionsState, setTransactionsState] = useRecoilState(transactionsStateStore);
 
   const getUserWallet = async (walletId: string) => {
@@ -43,12 +43,11 @@ function Wallet() {
       }
 
       const responseData: WalletRequestResponse = await response.json();
-      console.log("wallet info: ", responseData)
       setUserWallet(responseData);
       setLoading(false);
       return responseData;
     } catch (error: any) {
-      console.log('Error: ', error.message);
+      console.log('Error@getUserWallet: ', error.message);
     }
   };
 
@@ -71,25 +70,27 @@ function Wallet() {
       }
 
       const transactionsData: WalletTransactionsResponse = await response.json();
-      setUserTransactions(transactionsData)
       setTransactionsState([...transactionsState, transactionsData]);
       setLoading(false);
       return transactionsData;
     } catch (error: any) {
-      console.log('Error: ', error.message);
+      console.log('Error@getUserTransactions: ', error.message);
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       if (storedValue) {
-        const foundWallet = JSON.parse(storedValue);
-  
         try {
+          // check for existing wallet cache
           const [foundWalletData, foundTransactionsData] = await Promise.all([
-            getUserWallet(foundWallet.id),
-            getUserTransactions(foundWallet.id),
+            getUserWallet('95b650d2-8fa1-4b6c-a341-0e0ba2f4f041'),
+            getUserTransactions('95b650d2-8fa1-4b6c-a341-0e0ba2f4f041'),
           ]);
+
+          // log it
+          console.log("found wallet: ", foundWalletData)
+          console.log("wallet txs: ", foundTransactionsData)
      
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -153,8 +154,17 @@ function Wallet() {
 
   const WalletBalanceSkeleton = () => {
     return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
-        <div className="col-span-6 space-y-2">
+      <div className="grid gap-4 grid-flow-col auto-cols-min">
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-5 w-1/5" />
+            <Skeleton className="h-4 w-4/5" />
+          </CardHeader>
+          <CardContent className="h-10" />
+          <CardFooter>
+            <Skeleton className="h-8 w-[120px]" />
+          </CardFooter>
+        </Card>
         <Card>
           <CardHeader className="gap-2">
             <Skeleton className="h-5 w-1/5" />
@@ -165,24 +175,30 @@ function Wallet() {
             <Skeleton className="h-8 w-[120px]" />
           </CardFooter>
         </Card>
-        </div>
-        <div className="col-span-6 space-y-2">
-        <Card>
-      <CardHeader className="gap-2">
-        <Skeleton className="h-5 w-1/5" />
-        <Skeleton className="h-4 w-4/5" />
-      </CardHeader>
-      <CardContent className="h-10" />
-      <CardFooter>
-        <Skeleton className="h-8 w-[120px]" />
-      </CardFooter>
-    </Card>
-        </div>
     </div>
     )
   }
 
-  const payments = transactionsState[0]?.payments || [];
+  const TransactionsListing = memo(({ payments }: any) => (
+    <div className="space-y-8">
+      {payments.map((payment: PaymentResponse, index: any) => (
+        <div key={payment.id} className="flex items-center">
+        <Avatar className="h-9 w-9">
+          {payment.sent_payment ? <ArrowUpRightIcon className='text-red-500 dark:text-red-500' /> : <ArrowDownRightIcon className='text-green-500 dark:text-green-500' />}
+        </Avatar>
+        <div className="ml-4 space-y-1">
+          <p className="text-sm font-medium leading-none">{payment.sent_payment ? payment.sender_wallet.lightning_address : payment.receiver_wallet.lightning_address}</p>
+          <p className="text-sm text-muted-foreground truncate w-60">
+            {formatRelativeTime(payment.timestamp)}
+          </p>
+        </div>
+        <div className="ml-auto font-medium">{payment.amount.toLocaleString()} {payment.currency}</div>
+      </div>
+      ))}
+    </div>
+  ));
+
+  console.log("hmm: ", transactionsState);
 
   return (
     <>
@@ -201,14 +217,10 @@ function Wallet() {
                 <CardTitle>Transaction History</CardTitle>
               </CardHeader>
               <CardContent>
-                {payments.length === 0 ? (
+                {transactionsState.length === 0 ? (
                     <p className="text-xs">Your history will show up here once you make your first transaction.</p>
                   ) : (
-                    <div className="space-y-8">
-                      {payments.map((payment, index: any) => (
-                        <p key={index}> {payment.id}</p>
-                      ))}
-                    </div>
+                    <TransactionsListing payments={transactionsState[0].payments} />
                   )}
               </CardContent>
             </Card>

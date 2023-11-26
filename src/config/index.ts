@@ -89,11 +89,6 @@ const dashboardConfig: DashboardConfig = {
       icon: "invoices",
     },
     {
-      title: "Buy & Sell Bitcoin",
-      href: "/ramp",
-      icon: "bitcoin",
-    },
-    {
       title: "Settings",
       href: "/settings",
       icon: "settings",
