@@ -6,6 +6,7 @@ import { Link } from "react-router-dom"
 import { buttonVariants } from "./ui/button"
 import { dashboardConfig } from "@/config"
 import { MainNav } from "./main-nav"
+import { ModeToggle } from "./mode-toggle"
 
 interface AuthShellProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -21,7 +22,7 @@ export function AuthShell({
           <div className="flex h-20 items-center justify-between py-6">
             <MainNav items={dashboardConfig.mainNav} />
             <nav>
-              <Link
+              {/* <Link
                 to="/login"
                 className={cn(
                   buttonVariants({ variant: "secondary", size: "sm" }),
@@ -29,7 +30,8 @@ export function AuthShell({
                 )}
               >
                 Login
-              </Link>
+              </Link> */}
+              <ModeToggle />
             </nav>
           </div>
         </header>
