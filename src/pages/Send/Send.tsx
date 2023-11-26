@@ -25,8 +25,7 @@ import { CopyIcon, MoreHorizontalIcon, SendIcon, Share2Icon } from 'lucide-react
 import { Avatar } from '@/components/ui/avatar';
 import { cn, detectCurrencyViaPhone } from '@/lib/utils';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
-import { AlertDialogTitle } from '@radix-ui/react-alert-dialog';
+import { AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogHeader, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
 import { Input, SpliceAddressInput, SpliceAmountInput } from '@/components/ui/input';
 import { useRecoilState } from 'recoil';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -41,8 +40,7 @@ function Send() {
   const [payResponse, setPayResponse] = React.useState<PayInvoiceResponse | null>(null);
   const [showConfirmationDialog, setShowConfirmationDialog] = React.useState(false);
   const form = useForm()
-  const defaultWallet = {id: "95b650d2-8fa1-4b6c-a341-0e0ba2f4f041", lightning_address: "0769950599@splice.africa", preferred_fiat_currency: "KES", withdrawal_fee: 100, balances: [{amount: 2, currency: "BTC"}, {amount: 324244.4000000001, currency: "KES"}]}
-  const [storedValue, ,] = useLocalStorage(storedWallet, defaultWallet)
+  const [storedValue, ,] = useLocalStorage(storedWallet, {})
   const [sentPaymentsState, setSentPaymentsState] = useRecoilState(sentPaymentsStateStore);
 
   const validateLnAddress = (lnAddress: string) => {
@@ -70,7 +68,7 @@ function Send() {
   const localWallet = storedValue;
 
   const remoteFiatCurrency = detectCurrencyViaPhone(remoteLnAddress.split("@")[0])
-
+  
   const handleRequestInvoice = async () => {
     setShowConfirmationDialog(false);
     setIsLoading(true);
@@ -78,7 +76,7 @@ function Send() {
       walletId: localWallet.id,
       destionationAddress: remoteLnAddress,
       amount: sendAmount,
-      currency: remoteFiatCurrency || 'NGN',
+      currency: remoteFiatCurrency!,
     };
 
     try {
@@ -192,6 +190,7 @@ function Send() {
                             <SpliceAddressInput 
                               isValid={isAddressValid}
                               onChange={handleLnAddress}
+                              onBlur={handleLnAddressBlur}
                               value={remoteLnAddress}
                               disabled={isLoading || payResponse !== null}
                             />
@@ -200,22 +199,26 @@ function Send() {
                         </FormItem>
                       )}
                     />
+                    {remoteLnAddress && remoteFiatCurrency && 
                     <FormField
-                      control={form.control}
-                      name="sendAmount"
-                      render={() => (
-                        <FormItem className='pt-4'>
-                            <FormLabel htmlFor="email">{`Amount to send in ${localWallet.preferred_fiat_currency}`}</FormLabel>
-                            <SpliceAmountInput 
-                              currency={localWallet.preferred_fiat_currency} 
-                              onChange={handleAmount} 
-                              value={sendAmount === 0 ? sendAmount.toFixed(2) : sendAmount}  
-                              disabled={isLoading || payResponse !== null} 
-                            />
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                    control={form.control}
+                    name="sendAmount"
+                    render={() => (
+                      <FormItem className='pt-4'>
+                          <FormLabel htmlFor="email">{`Amount they should receieve in ${remoteFiatCurrency}`}</FormLabel>
+                          <SpliceAmountInput 
+                            currency={remoteFiatCurrency} 
+                            onChange={handleAmount} 
+                            value={sendAmount === 0 ? sendAmount.toFixed(2) : sendAmount}  
+                            disabled={isLoading || payResponse !== null} 
+                          />
+                        <FormMessage />
+                      </FormItem>
+                    )}
                     />
+                    
+                    }
+                    
                     <div className="grid gap-2 pt-5">
                       <Button
                         variant='outline'
@@ -233,12 +236,12 @@ function Send() {
                     <div className="grid gap-2 pt-5">
                       <SpliceQrCode
                           invoice={invoiceResponse.invoice}
-                          amount={sendAmount}
+                          amount={invoiceResponse.amount}
                           currency={invoiceResponse.currency}
                           size={250}
                         />
 
-                        <p className='font-xs font-mono text-center'>Total Fee: {invoiceResponse.amount.toLocaleString()} {invoiceResponse.currency}</p>
+                        <p className='font-xs font-mono text-center'>Show this quote to the sender for confirmation</p>
                         <div className="flex space-x-2 mt-4">
                           <Input value={invoiceResponse.invoice} readOnly />
                           <Button size="sm" variant="secondary" className="shrink-0" onClick={handleCopyInvoice}>
@@ -258,7 +261,7 @@ function Send() {
                         {isLoading && (
                           <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                         )}
-                        Send {invoiceResponse.amount.toLocaleString()} {invoiceResponse.currency}
+                        Pay with wallet
                       </Button>
                       <Button
                         onClick={() => {
@@ -312,7 +315,7 @@ function Send() {
                             {tx.proofOfPayment}
                           </p>
                         </div>
-                        <div className="ml-auto font-medium">{tx.amount.toLocaleString()} {tx.currency}</div>
+                        <div className="ml-auto font-medium">{tx.amount.toLocaleString('en-GB', { maximumFractionDigits: 0 })} {tx.currency}</div>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="h-8 w-8 p-0 ml-5">
@@ -346,7 +349,7 @@ function Send() {
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>
-                {`You would like to send ${invoiceResponse?.amount.toLocaleString()} ${invoiceResponse?.currency} to ${remoteLnAddress}?`}
+                {`Send ${invoiceResponse?.amount.toLocaleString('en-GB', { maximumFractionDigits: 0 })} ${invoiceResponse?.currency} to ${remoteLnAddress}?`}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

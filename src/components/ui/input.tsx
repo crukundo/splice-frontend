@@ -67,6 +67,11 @@ const getCurrencyIcon = (currency: string): JSX.Element => {
       <AvatarImage src="src/assets/ng.png" alt="Nigerian Naira" />
     </Avatar>;
       break;
+    case 'GHS':
+      avatar = <Avatar className="text-muted-foreground">
+      <AvatarImage src="src/assets/gh.png" alt="Nigerian Naira" />
+    </Avatar>;
+      break;
     default:
       avatar = (
         <Avatar className="text-muted-foreground">
@@ -107,7 +112,7 @@ SpliceAmountInput.displayName = "Splice Amount Input"
 
 export interface SpliceAddressInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-    isValid: boolean;
+    isValid?: boolean;
   }
 
 const SpliceAddressInput = React.forwardRef<HTMLInputElement, SpliceAddressInputProps>(
@@ -124,12 +129,12 @@ const SpliceAddressInput = React.forwardRef<HTMLInputElement, SpliceAddressInput
     return (
       <div className="relative rounded-lg shadow-lg">
       <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-        <AtSignIcon className={`h-8 w-8 ${iconColor}`} />
+        <AtSignIcon className={`h-5 w-5 ${iconColor}`} />
       </span>
       <input
         type={type}
         className={cn(
-          "flex h-10 w-full rounded-md border border-input px-3 py-8 pl-16 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-6 pl-10 text-lg ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         ref={ref}

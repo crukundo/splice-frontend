@@ -6,21 +6,17 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { memo, useEffect, useState } from 'react';
 import { BalanceProps, PaymentResponse, WalletRequestResponse, WalletTransactionsResponse } from '@/lib/interfaces';
 import { apiUrl, storedWallet } from '@/config';
-import { useNavigate } from 'react-router-dom';
 import useLocalStorage from '@/hooks/use-local-storage';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from '@/components/ui/use-toast';
 import { useRecoilState } from 'recoil';
 import transactionsStateStore from '@/store/transactions';
-import { ArrowDownRightIcon, ArrowUpRightIcon, MoreHorizontalIcon, SendIcon } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { formatDate, formatRelativeTime } from '@/lib/utils';
+import { ArrowDownRightIcon, ArrowUpRightIcon } from 'lucide-react';
+import { formatDate } from '@/lib/utils';
 
 function Wallet() {
   const [userWallet, setUserWallet] = useState<WalletRequestResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const [storedValue, ] = useLocalStorage(storedWallet, {})
   const [transactionsState, setTransactionsState] = useRecoilState(transactionsStateStore);
 
@@ -84,8 +80,8 @@ function Wallet() {
         try {
           // check for existing wallet cache
           const [foundWalletData, foundTransactionsData] = await Promise.all([
-            getUserWallet('95b650d2-8fa1-4b6c-a341-0e0ba2f4f041'),
-            getUserTransactions('95b650d2-8fa1-4b6c-a341-0e0ba2f4f041'),
+            getUserWallet(storedValue.id),
+            getUserTransactions(storedValue.id),
           ]);
 
           // log it
@@ -144,7 +140,7 @@ function Wallet() {
             {getCurrencyIcon(currency)}
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold"> {amount.toLocaleString()}</div>
+            <div className="text-2xl font-bold"> {amount.toLocaleString('en-GB', { maximumFractionDigits: 0 })}</div>
           </CardContent>
         </Card>
         ))}
@@ -187,18 +183,16 @@ function Wallet() {
           {payment.sent_payment ? <ArrowUpRightIcon className='text-red-500 dark:text-red-500' /> : <ArrowDownRightIcon className='text-green-500 dark:text-green-500' />}
         </Avatar>
         <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">{payment.sent_payment ? payment.sender_wallet.lightning_address : payment.receiver_wallet.lightning_address}</p>
+          <p className="text-sm font-medium leading-none">{payment.sent_payment ? payment.receiver_wallet.lightning_address : payment.sender_wallet.lightning_address}</p>
           <p className="text-sm text-muted-foreground truncate w-60">
-            {formatRelativeTime(payment.timestamp)}
+            {formatDate(payment.timestamp)}
           </p>
         </div>
-        <div className="ml-auto font-medium">{payment.amount.toLocaleString()} {payment.currency}</div>
+        <div className="ml-auto font-medium">{payment.amount.toLocaleString('en-GB', { maximumFractionDigits: 0 })} {payment.currency}</div>
       </div>
       ))}
     </div>
   ));
-
-  console.log("hmm: ", transactionsState);
 
   return (
     <>

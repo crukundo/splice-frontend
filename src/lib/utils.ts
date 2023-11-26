@@ -5,25 +5,43 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function detectCurrencyViaPhone(phoneNumber: string): string | null {
-  if (phoneNumber.startsWith('234')) {
-    return 'NGN';
-  } else if (phoneNumber.startsWith('254')) {
-    return 'KES';
-  } else if (phoneNumber.startsWith('233')) {
-    return 'GHC';
-  } else if (phoneNumber.startsWith('0')) {
-    if (phoneNumber.startsWith('080') || phoneNumber.startsWith('070')) {
-      return 'NGN';
-    } else if (phoneNumber.startsWith('07')) {
-      return 'KES';
-    } else if (phoneNumber.startsWith('02')) {
-      return 'GHC'; // only considering Greater Accra for now
-    }
-    // maybe more edge cases here
-  }
+// export function detectCurrencyViaPhone(phoneNumber: string): string | null {
+//   if (phoneNumber.startsWith('234')) {
+//     return 'NGN';
+//   } else if (phoneNumber.startsWith('254')) {
+//     return 'KES';
+//   } else if (phoneNumber.startsWith('233')) {
+//     return 'GHC';
+//   } else if (phoneNumber.startsWith('0')) {
+//     if (phoneNumber.startsWith('080') || phoneNumber.startsWith('070')) {
+//       return 'NGN';
+//     } else if (phoneNumber.startsWith('07')) {
+//       return 'KES';
+//     } else if (phoneNumber.startsWith('02')) {
+//       return 'GHS'; // only considering Greater Accra for now
+//     }
+//     // maybe more edge cases here
+//   }
 
-  return null;
+//   return null;
+// }
+
+export function detectCurrencyViaPhone(input: string): string | null {
+  // @todo: Improve this for edge cases
+  const kenyanRegex = /^(\+254|254|0)?[7-9]\d{8}$/
+  const ghanaianRegex = /^(\+233|233|0)(20[0-9]|50[0-9]|24[0-9]|54[0-9]|27[0-9]|57[0-9]|23[0-9]|53[0-9]|26[0-9]|56[0-9]|28[0-9]|58[0-9]|21[0-9]|51[0-9]|25[0-9]|55[0-9]|29[0-9]|59[0-9]|22[0-9]|52[0-9]|24[0-9]|54[0-9]|27[0-9]|57[0-9]|23[0-9]|53[0-9]|26[0-9]|56[0-9]|28[0-9]|58[0-9]|21[0-9]|51[0-9]|25[0-9]|55[0-9]|29[0-9]|59[0-9])([0-9]{6})$/
+  const nigerianRegex = /^(\+234|234|0)(701|702|703|704|705|706|707|708|709|802|803|804|805|806|807|808|809|810|811|812|813|814|815|816|817|818|819|909|908|901|902|903|904|905|906|907)([0-9]{7})$/
+
+  // Test the input against each regex
+  if (kenyanRegex.test(input)) {
+    return "KES"; // Kenyan Shilling
+  } else if (ghanaianRegex.test(input)) {
+    return "GHS"; // Ghanaian Cedi
+  } else if (nigerianRegex.test(input)) {
+    return "NGN"; // Nigerian Naira
+  } else {
+    return null; // No match found
+  }
 }
 
 export function formatDate(input: string | number): string {
