@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { ChevronsUpDown } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import isMobile from "@/lib/is-mobile";
+import { Separator } from "@/components/ui/separator";
 
 function Welcome() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -114,16 +115,7 @@ function Welcome() {
               Create A New Wallet
             </Button>
           </div>
-          <div className="relative justify-center">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or
-              </span>
-            </div>
-          </div>
+          <Separator className="my-4" />
           <div className="grid items-center">
           <Collapsible
             open={isExpanded}

@@ -1,5 +1,3 @@
-
-import type { SharedProps } from 'notistack';
 import { Icons } from "@/components/icons"
 export interface BalanceProps {
   currency: string;
@@ -113,11 +111,6 @@ export interface PaymentResponse {
 export interface WalletTransactionsResponse {
   payments: PaymentResponse[]
 }
-
-export type Notifications = {
-  options: SharedProps;
-  maxSnack: number;
-};
 
 export type NavItem = {
   title: string

@@ -1,12 +1,7 @@
-import {
-  Receipt,
-  Send,
-  Wallet,
-} from '@mui/icons-material';
-
 import asyncComponentLoader from '@/lib/loader';
 
 import { Pages, Routes } from './types';
+import { ArrowDownRightIcon, ArrowUpRightIcon, WalletIcon } from 'lucide-react';
 
 const routes: Routes = {
   [Pages.Welcome]: {
@@ -21,24 +16,20 @@ const routes: Routes = {
     component: asyncComponentLoader(() => import('@/pages/Wallet')),
     path: '/wallet',
     title: 'Wallet',
-    icon: Wallet,
+    icon: WalletIcon,
   },
   [Pages.Send]: {
     component: asyncComponentLoader(() => import('@/pages/Send')),
     path: '/send',
     title: 'Send',
-    icon: Send,
+    icon: ArrowUpRightIcon,
   },
   [Pages.Receive]: {
     component: asyncComponentLoader(() => import('@/pages/Receive')),
     path: '/receive',
     title: 'Receive',
-    icon: Receipt,
+    icon: ArrowDownRightIcon,
   },
-  // [Pages.NotFound]: {
-  //   component: asyncComponentLoader(() => import('@/pages/NotFound')),
-  //   path: '*',
-  // },
 };
 
 export {routes};

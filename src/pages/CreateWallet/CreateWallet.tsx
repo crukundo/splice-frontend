@@ -20,7 +20,6 @@ import { useForm } from 'react-hook-form';
 import PhoneInput from 'react-phone-input-2';
 import { toast } from '@/components/ui/use-toast';
 import { AuthShell } from '@/components/auth-shell';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 
 interface CreateNewWalletProps extends React.HTMLAttributes<HTMLDivElement> {}
 

@@ -1,9 +1,5 @@
 import QRCode from 'react-qr-code';
 
-import { ButtonBase, Stack, Typography } from '@mui/material';
-import { Box } from '@mui/system';
-
-import { FullSizeCenteredFlexBox } from '@/components/styled';
 import { toast } from '../ui/use-toast';
 
 interface Props {
