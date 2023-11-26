@@ -14,13 +14,31 @@ import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
 import { CopyIcon, Share2Icon } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
+import { useNavigate } from 'react-router-dom';
+import { getCurrentWallet } from '@/lib/session';
 
 function Receive() {
   const [isLoading, setIsLoading] = useState(false);
   const [invoiceAmount, setInvoiceAmount] = useState(0);
   const [generatedInvoice, setGeneratedInvoice] = useState('');
-
   const form = useForm()
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function checkWallet() {
+      try {
+        const wallet = await getCurrentWallet();
+        if (!wallet) {
+          navigate('/login')
+        } else {
+        }
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    }
+
+    checkWallet()
+  }, [navigate])
 
   const handleAmount = (event: any) => {
     const inputAmount = event.target.value;

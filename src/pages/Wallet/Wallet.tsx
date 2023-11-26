@@ -13,12 +13,32 @@ import { useRecoilState } from 'recoil';
 import transactionsStateStore from '@/store/transactions';
 import { ArrowDownRightIcon, ArrowUpRightIcon } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { redirect, useNavigate } from 'react-router-dom';
+import { getCurrentWallet } from '@/lib/session';
 
 function Wallet() {
   const [userWallet, setUserWallet] = useState<WalletRequestResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [storedValue, ] = useLocalStorage(storedWallet, {})
   const [transactionsState, setTransactionsState] = useRecoilState(transactionsStateStore);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function checkWallet() {
+      try {
+        const wallet = await getCurrentWallet();
+        if (!wallet) {
+          navigate('/login')
+        } else {
+        }
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    }
+
+    checkWallet()
+  }, [navigate])
 
   const getUserWallet = async (walletId: string) => {
     try {

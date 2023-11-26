@@ -7,40 +7,57 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { Avatar, AvatarImage } from "./ui/avatar"
-import { Link } from "react-router-dom"
 import { Badge } from "./ui/badge"
 import { Fragment } from "react"
-import { Wallet } from "@/lib/interfaces"
+import { WalletRequestResponse } from "@/lib/interfaces"
 import { ZapIcon } from "lucide-react"
+import { logout } from "@/lib/logout"
+import { toast } from "./ui/use-toast"
+import { useNavigate } from "react-router-dom"
 
-export function AccountNav(wallet: Wallet) {
+interface AccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
+  wallet?: WalletRequestResponse
+}
 
-  const fakeId = '95b650d2-8fa1-4b6c-a341-0e0ba2f4f231' 
+function AccountNav({ wallet }: AccountNavProps) {
+
+  const navigate = useNavigate()
   
-  // @todo: replace fakeId with wallet.id later
-  // use actual wallet id from storage
-
   return (
     <Fragment>
-      <Badge variant="secondary"><ZapIcon className="h-4 w-4 mr-2 text-orange-400" /> 254712345678@splice.africa</Badge>
+      <Badge variant="secondary" className="font-mono text-xs"><ZapIcon className="h-4 w-4 mr-2 text-orange-400" /> {wallet?.lightning_address}</Badge>
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar className="h-8 w-8">
-            <AvatarImage alt="Picture" src={`https://robohash.org/${fakeId}`} />
+            <AvatarImage alt="Picture" src={`https://robohash.org/${wallet?.id}`} />
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem asChild>
-            <Link to="">Copy splice address</Link>
+          <DropdownMenuItem onClick={() => {
+            navigator.clipboard.writeText(wallet?.lightning_address!);
+            toast({
+              title: "Copied",
+              description: "Your splice address is on your clipboard",
+            })
+          }} asChild>
+             <span>Copy splice address</span>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="">Copy wallet id</Link>
+          <DropdownMenuItem onClick={() => {
+            navigator.clipboard.writeText(wallet?.id!);
+            toast({
+              title: "Copied",
+              description: "Your wallet id is on your clipboard",
+            })
+          }} asChild>
+            <span>Copy wallet id</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="cursor-pointer"
-            onSelect={(event) => {
+            onSelect={async (event) => {
               event.preventDefault()
+              await logout()
+              navigate('/')
             } }
           >
             Log out
@@ -50,3 +67,5 @@ export function AccountNav(wallet: Wallet) {
     </Fragment>
   )
 }
+
+export {AccountNav}

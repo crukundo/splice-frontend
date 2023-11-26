@@ -59,7 +59,7 @@ const giphy404 = 'https://giphy.com/embed/xTiN0L7EW5trfOvEk0';
 const dashboardConfig: DashboardConfig = {
   mainNav: [
     {
-      title: "Welcome",
+      title: "",
       href: "/",
     },
     {
@@ -87,11 +87,6 @@ const dashboardConfig: DashboardConfig = {
       title: "Receive",
       href: "/receive",
       icon: "invoices",
-    },
-    {
-      title: "Settings",
-      href: "/settings",
-      icon: "settings",
     },
   ],
 }

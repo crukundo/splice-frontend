@@ -3,7 +3,6 @@ import { buttonVariants } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import Meta from "@/components/Meta";
 import { AuthShell } from "@/components/auth-shell";
-import { SiteFooter } from "@/components/site-footer";
 
 
 function Welcome() {
@@ -36,7 +35,6 @@ function Welcome() {
           </div>
         </div>
       </section>
-      <SiteFooter className="border-t" />
       </AuthShell>
     </>
   )

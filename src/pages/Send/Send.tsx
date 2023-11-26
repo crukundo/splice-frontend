@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import Lottie from 'lottie-react';
 
 import Meta from '@/components/Meta';
@@ -30,18 +28,39 @@ import { Input, SpliceAddressInput, SpliceAmountInput } from '@/components/ui/in
 import { useRecoilState } from 'recoil';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import sentPaymentsStateStore from '@/store/send';
+import { useEffect, useState } from 'react';
+import { getCurrentWallet } from '@/lib/session';
+import { useNavigate } from 'react-router-dom';
 
 function Send() {
-  const [sendAmount, setSendAmount] = React.useState(0);
-  const [remoteLnAddress, setRemoteLnAddress] = React.useState('');
-  const [isAddressValid, setIsAddressValid] = React.useState(true);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [invoiceResponse, setInvoiceResponse] = React.useState<CreateInvoiceResponse | null>(null);
-  const [payResponse, setPayResponse] = React.useState<PayInvoiceResponse | null>(null);
-  const [showConfirmationDialog, setShowConfirmationDialog] = React.useState(false);
+  const [sendAmount, setSendAmount] = useState(0);
+  const [remoteLnAddress, setRemoteLnAddress] = useState('');
+  const [isAddressValid, setIsAddressValid] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [invoiceResponse, setInvoiceResponse] = useState<CreateInvoiceResponse | null>(null);
+  const [payResponse, setPayResponse] = useState<PayInvoiceResponse | null>(null);
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const form = useForm()
   const [storedValue, ,] = useLocalStorage(storedWallet, {})
   const [sentPaymentsState, setSentPaymentsState] = useRecoilState(sentPaymentsStateStore);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function checkWallet() {
+      try {
+        const wallet = await getCurrentWallet();
+        if (!wallet) {
+          navigate('/login')
+        } else {
+        }
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    }
+
+    checkWallet()
+  }, [navigate])
 
   const validateLnAddress = (lnAddress: string) => {
     const addressRegex = /\S+@\S+\.\S+/;
