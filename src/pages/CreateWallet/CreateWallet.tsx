@@ -12,7 +12,7 @@ import useLocalStorage from '@/hooks/use-local-storage';
 import { Icons } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
@@ -125,7 +125,7 @@ function CreateNewWallet({
         <div className="mx-auto flex w-full flex-col justify-center space-y-2 sm:w-[400px]">
           <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
-              Create a wallet
+              Welcome to Splice Africa
             </h1>
           </div>
           <Form {...form}>
@@ -181,11 +181,14 @@ function CreateNewWallet({
                         }}
                         value={mobileNumber}
                         country={selectedCountry?.code}
-                        preferredCountries={["KE", "NG"]}
                         placeholder={`${
                           selectedCountry.code === "NG"
-                            ? "234 123 457 8900"
-                            : "254 701 234567"
+                          ? "234 80X 1234 5678"
+                          : selectedCountry.code === "KE"
+                          ? "254 70X 123456"
+                          : selectedCountry.code === "GH"
+                          ? "233 02X 123 5678"
+                          : "Enter mobile number"
                         }`}
                         prefix={"+"}
                         specialLabel=""
@@ -231,14 +234,15 @@ function CreateNewWallet({
               </div>
             </form>
           </Form>
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <Button className='font-normal text-sm' variant="link">I can't see my country 😥</Button>
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80">
-                <p className="text-sm">We'll have an update on coverage soon</p>
-            </HoverCardContent>
-          </HoverCard>
+          <p className="px-8 text-center text-sm text-muted-foreground">
+             Already got a wallet? {" "}
+              <Link
+                to="/"
+                className="underline underline-offset-4 hover:text-primary"
+              >
+                Click here
+              </Link>{""}.
+              </p>
         </div>
       </div>
     </div>
