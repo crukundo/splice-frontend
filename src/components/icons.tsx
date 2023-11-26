@@ -6,7 +6,6 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Command,
   DollarSign,
   File,
   FileSpreadsheet,
@@ -33,7 +32,12 @@ import {
 export type Icon = LucideProps
 
 export const Icons = {
-  logo: Command,
+  logo: () => {
+
+  return (
+    <img className="h-8 w-8" src='src/assets/logo.svg' alt="Splice Africa Logo" />
+  );
+  },
   close: X,
   spinner: Loader2,
   chevronLeft: ChevronLeft,

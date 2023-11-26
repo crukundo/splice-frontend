@@ -62,15 +62,6 @@ const dashboardConfig: DashboardConfig = {
       title: "",
       href: "/",
     },
-    {
-      title: "FAQ",
-      href: "/faq",
-    },
-    {
-      title: "Support",
-      href: "/support",
-      disabled: true,
-    },
   ],
   sidebarNav: [
     {
