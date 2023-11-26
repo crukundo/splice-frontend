@@ -179,10 +179,10 @@ function Wallet() {
     <div className="space-y-8">
       {payments.map((payment: PaymentResponse, index: any) => (
         <div key={payment.id} className="flex items-center">
-        <Avatar className="h-9 w-9">
+        <Avatar className="h-6 w-6">
           {payment.sent_payment ? <ArrowUpRightIcon className='text-red-500 dark:text-red-500' /> : <ArrowDownRightIcon className='text-green-500 dark:text-green-500' />}
         </Avatar>
-        <div className="ml-4 space-y-1">
+        <div className="ml-2 space-y-1">
           <p className="text-sm font-medium leading-none">{payment.sent_payment ? payment.receiver_wallet.lightning_address : payment.sender_wallet.lightning_address}</p>
           <p className="text-sm text-muted-foreground truncate w-60">
             {formatDate(payment.timestamp)}
@@ -214,7 +214,7 @@ function Wallet() {
                 {transactionsState.length === 0 ? (
                     <p className="text-xs">Your history will show up here once you make your first transaction.</p>
                   ) : (
-                    <TransactionsListing payments={transactionsState[0].payments} />
+                    <TransactionsListing payments={transactionsState[0].payments.slice().reverse()} />
                   )}
               </CardContent>
             </Card>

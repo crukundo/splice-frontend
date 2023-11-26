@@ -21,7 +21,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from '@/components/ui/use-toast';
 import { Icons } from '@/components/icons';
 import useLocalStorage from '@/hooks/use-local-storage';
-import { CopyIcon, MoreHorizontalIcon, SendIcon, Share2Icon } from 'lucide-react';
+import { ArrowUpRightIcon, CopyIcon, MoreHorizontalIcon, SendIcon, Share2Icon } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { cn, detectCurrencyViaPhone } from '@/lib/utils';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -304,12 +304,12 @@ function Send() {
                   <p className="text-xs">There are no payments at this time.</p>
                 ) : (
                   <div className="space-y-8">
-                    {sentPaymentsState.map((tx: PayInvoiceResponse, index: any) => (
+                    {sentPaymentsState.slice().reverse().map((tx: PayInvoiceResponse, index: any) => (
                       <div key={index} className="flex items-center">
-                        <Avatar className="h-9 w-9">
-                          <SendIcon className='text-red-500 dark:text-red-500' />
+                        <Avatar className="h-6 w-6">
+                          <ArrowUpRightIcon className='text-red-500 dark:text-red-500' />
                         </Avatar>
-                        <div className="ml-4 space-y-1">
+                        <div className="ml-2 space-y-1">
                           <p className="text-sm font-medium leading-none">{tx.destinationAddress}</p>
                           <p className="text-sm text-muted-foreground truncate w-60">
                             {tx.proofOfPayment}
