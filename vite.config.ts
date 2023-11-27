@@ -39,4 +39,7 @@ export default defineConfig({
     },
     preserveSymlinks: true,
   },
+  build: {
+    minify: false
+  }
 });
