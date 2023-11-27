@@ -49,7 +49,7 @@ function Receive() {
 
   const handleCopyInvoice = () => {
     navigator.clipboard.writeText(generatedInvoice);
-    return toast({
+    toast({
       title: 'Copied',
       description: 'Invoice is on your clipboard',
     });
@@ -88,7 +88,7 @@ function Receive() {
         });
 
         if (!response.ok) {
-          return toast({
+          toast({
             title: 'Something went wrong.',
             description: 'Your invoice was not created. Please try again.',
             variant: 'destructive',

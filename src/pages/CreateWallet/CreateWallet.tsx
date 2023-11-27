@@ -99,7 +99,7 @@ function CreateNewWallet({ className, ...props }: CreateNewWalletProps) {
       });
 
       if (!response.ok) {
-        return toast({
+        toast({
           title: 'Something went wrong.',
           description: 'Your wallet was not created. Please try again.',
           variant: 'destructive',

@@ -132,7 +132,7 @@ function Send() {
       });
 
       if (!response.ok) {
-        return toast({
+        toast({
           title: 'Something went wrong.',
           description: "Splice couldn't generate an invoice. Please try again.",
           variant: 'destructive',
@@ -151,7 +151,7 @@ function Send() {
 
   const handleCopyInvoice = () => {
     navigator.clipboard.writeText(invoiceResponse?.invoice || '');
-    return toast({
+    toast({
       title: 'Copied',
       description: 'Invoice is on your clipboard',
     });
@@ -399,7 +399,7 @@ function Send() {
                             <DropdownMenuItem
                               onClick={() => {
                                 navigator.clipboard.writeText(tx.proofOfPayment);
-                                return toast({
+                                toast({
                                   title: 'Copied',
                                   description: 'The transaction ID is on your clipboard',
                                 });
