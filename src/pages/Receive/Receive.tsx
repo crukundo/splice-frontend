@@ -144,7 +144,7 @@ function Receive() {
                       </Label>
                       <Input id="link" defaultValue={transactionProof} readOnly />
                     </div>
-                    <Button type="submit" size="sm" className="px-3">
+                    <Button onClick={handleCopyProof} size="sm" className="px-3">
                       <span className="sr-only">Copy</span>
                       <CopyIcon className="h-4 w-4" />
                     </Button>
@@ -161,9 +161,7 @@ function Receive() {
                   </div>
                   <DialogFooter className="sm:justify-center">
                     <DialogClose asChild>
-                      <Button onClick={handleCopyProof} variant="secondary">
-                        Close
-                      </Button>
+                      <Button variant="secondary">Close</Button>
                     </DialogClose>
                   </DialogFooter>
                 </DialogContent>
