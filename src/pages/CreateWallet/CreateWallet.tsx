@@ -75,7 +75,8 @@ function CreateNewWallet({ className, ...props }: CreateNewWalletProps) {
 
   const handleMobileNumber = (event: any) => {
     const newNumber = event.target.value;
-    setMobileNumber(newNumber.trim());
+    setMobileNumber(newNumber);
+    console.log(mobileNumber);
   };
 
   const handleWithdrawFee = (event: any) => {
@@ -85,13 +86,12 @@ function CreateNewWallet({ className, ...props }: CreateNewWalletProps) {
 
   const onPressContinue = async () => {
     setIsLoading(true);
-    const formattedNumber = formatPhoneNumber(mobileNumber, selectedCountry?.phone);
     const payload: CreateWalletRequestBody = {
-      phoneNumber: formattedNumber,
+      phoneNumber: mobileNumber,
       withdrawalFee: withdrawFee,
       preferredFiatCurrency: selectedCountry?.currency || '', // @todo handle undefined better
     };
-
+    console.log('payload: ', payload);
     try {
       const response = await fetch(`${apiUrl}/wallets`, {
         method: 'POST',
