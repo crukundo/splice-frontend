@@ -54,8 +54,9 @@ function CreateNewWallet({ className, ...props }: CreateNewWalletProps) {
     {} as { [key: string]: CountryType },
   );
 
-  const handleChosenCountry = () => {
-    setSelectedCountry({ code: 'NG', label: 'Nigeria', phone: '234', currency: 'NGN' });
+  const handleChosenCountry = (event: any) => {
+    const chosen = valueToCountryMap[event.target.value];
+    setSelectedCountry(chosen);
   };
 
   const formatPhoneNumber = (
@@ -130,6 +131,8 @@ function CreateNewWallet({ className, ...props }: CreateNewWalletProps) {
     }
   };
 
+  console.log('selected country: ', selectedCountry);
+
   return (
     <>
       <Meta title="Create a new wallet" />
@@ -151,7 +154,7 @@ function CreateNewWallet({ className, ...props }: CreateNewWalletProps) {
                         <FormLabel>Select Your Country</FormLabel>
                         <FormMessage />
                         <RadioGroup
-                          onValueChange={handleChosenCountry}
+                          onChange={handleChosenCountry}
                           className="grid max-w-md grid-cols-3 gap-3 pt-2"
                         >
                           {allowedCountries.map((country) => (
