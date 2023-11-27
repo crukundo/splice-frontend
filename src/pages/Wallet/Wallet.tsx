@@ -279,7 +279,7 @@ function Wallet() {
               <CardTitle>Transaction History</CardTitle>
             </CardHeader>
             <CardContent>
-              {transactionsState[0].payments.length === 0 ? (
+              {transactionsState.length === 0 ? (
                 <p className="text-xs">
                   Your history will show up here once you make your first transaction.
                 </p>
