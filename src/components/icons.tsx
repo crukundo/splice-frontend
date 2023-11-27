@@ -27,16 +27,13 @@ import {
   User,
   Wallet,
   X,
-} from "lucide-react"
+} from 'lucide-react';
 
-export type Icon = LucideProps
+export type Icon = LucideProps;
 
 export const Icons = {
   logo: () => {
-
-  return (
-    <img className="h-8 w-8" src='../assets/logo.svg' alt="Splice Africa Logo" />
-  );
+    return <img className="h-8 w-8" src="/logo.svg" alt="Splice Africa Logo" />;
   },
   close: X,
   spinner: Loader2,
@@ -65,4 +62,4 @@ export const Icons = {
   wallet: Wallet,
   good: ThumbsUp,
   lnAddress: AtSign,
-}
+};

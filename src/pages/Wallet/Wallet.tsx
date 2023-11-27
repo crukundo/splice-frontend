@@ -154,21 +154,21 @@ function Wallet() {
         case 'KES':
           avatar = (
             <Avatar className="text-muted-foreground">
-              <AvatarImage src="src/assets/ke.png" alt="Kenyan shillings" />
+              <AvatarImage src="/ke.png" alt="Kenyan shillings" />
             </Avatar>
           );
           break;
         case 'NGN':
           avatar = (
             <Avatar className="text-muted-foreground">
-              <AvatarImage src="src/assets/ng.png" alt="Nigerian Naira" />
+              <AvatarImage src="/ng.png" alt="Nigerian Naira" />
             </Avatar>
           );
           break;
         default:
           avatar = (
             <Avatar className="text-muted-foreground">
-              <AvatarImage src="src/assets/gh.png" alt="Currency" />
+              <AvatarImage src="/gh.png" alt="Currency" />
             </Avatar>
           );
       }
