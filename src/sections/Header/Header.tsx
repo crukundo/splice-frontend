@@ -33,7 +33,7 @@ function Header() {
   return (
     <header className="sticky top-0 z-40 border-b bg-background">
       <div className="container flex h-16 items-center justify-between py-4">
-        <MainNav items={dashboardConfig.mainNav} />
+        <MainNav items={dashboardConfig.mainNav} mobileLinks={dashboardConfig.sidebarNav} />
         <AccountNav
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           wallet={foundWallet!}
