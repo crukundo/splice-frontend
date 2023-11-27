@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-
-
-import {dashboardConfig } from '@/config';
-import { MainNav } from '@/components/main-nav';
-import { AccountNav } from '@/components/account-nav';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentWallet } from '@/lib/session';
+
 import { WalletRequestResponse } from '@/lib/interfaces';
+import { getCurrentWallet } from '@/lib/session';
+
+import { AccountNav } from '@/components/account-nav';
+import { MainNav } from '@/components/main-nav';
+
+import { dashboardConfig } from '@/config';
 
 function Header() {
-
-  const [foundWallet, setFoundWallet] = useState<WalletRequestResponse | null>(null)
+  const [foundWallet, setFoundWallet] = useState<WalletRequestResponse | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,27 +18,28 @@ function Header() {
       try {
         const wallet = await getCurrentWallet();
         if (!wallet) {
-          navigate('/login')
+          navigate('/');
         } else {
-          setFoundWallet(wallet as WalletRequestResponse)
+          setFoundWallet(wallet as WalletRequestResponse);
         }
       } catch (error) {
-        console.error('Error:', error)
+        console.error('Error:', error);
       }
     }
 
-    checkWallet()
-  }, [navigate])
+    checkWallet();
+  }, [navigate]);
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background">
-        <div className="container flex h-16 items-center justify-between py-4">
-          <MainNav items={dashboardConfig.mainNav} />
-          <AccountNav
-            wallet={foundWallet!}
-          />
-        </div>
-      </header>
+      <div className="container flex h-16 items-center justify-between py-4">
+        <MainNav items={dashboardConfig.mainNav} />
+        <AccountNav
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          wallet={foundWallet!}
+        />
+      </div>
+    </header>
   );
 }
 
