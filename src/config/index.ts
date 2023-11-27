@@ -41,8 +41,8 @@ const dashboardConfig: DashboardConfig = {
       icon: 'send',
     },
     {
-      title: 'Receive',
-      href: '/receive',
+      title: 'Claim Payment',
+      href: '/claim',
       icon: 'invoices',
     },
   ],

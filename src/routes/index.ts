@@ -26,10 +26,10 @@ const routes: Routes = {
   },
   [Pages.Receive]: {
     component: asyncComponentLoader(() => import('@/pages/Receive')),
-    path: '/receive',
-    title: 'Receive',
+    path: '/claim',
+    title: 'Claim Payment',
     icon: ArrowDownRightIcon,
   },
 };
 
-export {routes};
+export { routes };
