@@ -42,7 +42,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input, SpliceAddressInput, SpliceAmountInput } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
 
 import Meta from '@/components/Meta';
 import SpliceQrCode from '@/components/QRCode';
@@ -52,6 +51,7 @@ import { DashboardShell } from '@/components/shell';
 
 import successfulTransaction from '@/assets/lottie/success-transaction.json';
 import { apiUrl, storedWallet } from '@/config';
+import useNotifications from '@/store/notifications';
 import sentPaymentsStateStore from '@/store/send';
 import Lottie from 'lottie-react';
 import { ArrowUpRightIcon, CopyIcon, MoreHorizontalIcon, Share2Icon } from 'lucide-react';
@@ -65,6 +65,7 @@ function Send() {
   const [payResponse, setPayResponse] = useState<PayInvoiceResponse | null>(null);
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const form = useForm();
+  const [, notifyActions] = useNotifications();
   const [storedValue, ,] = useLocalStorage(storedWallet, {});
   const [sentPaymentsState, setSentPaymentsState] = useRecoilState(sentPaymentsStateStore);
 
@@ -132,10 +133,12 @@ function Send() {
       });
 
       if (!response.ok) {
-        toast({
-          title: 'Something went wrong.',
-          description: "Splice couldn't generate an invoice. Please try again.",
-          variant: 'destructive',
+        notifyActions.push({
+          message: "Splice couldn't generate an invoice. Please try again.",
+          dismissed: true,
+          options: {
+            variant: 'error',
+          },
         });
       }
 
@@ -151,9 +154,12 @@ function Send() {
 
   const handleCopyInvoice = () => {
     navigator.clipboard.writeText(invoiceResponse?.invoice || '');
-    toast({
-      title: 'Copied',
-      description: 'Invoice is on your clipboard',
+    notifyActions.push({
+      message: 'Invoice is on your clipboard',
+      dismissed: true,
+      options: {
+        variant: 'info',
+      },
     });
   };
 
@@ -177,10 +183,12 @@ function Send() {
       });
 
       if (!response.ok) {
-        toast({
-          title: 'Something went wrong.',
-          description: "We couldn't pay the invoice. Please refresh and try again",
-          variant: 'destructive',
+        notifyActions.push({
+          message: 'Payment was not successful. Please refresh and try again',
+          dismissed: true,
+          options: {
+            variant: 'error',
+          },
         });
       }
 
@@ -399,9 +407,12 @@ function Send() {
                             <DropdownMenuItem
                               onClick={() => {
                                 navigator.clipboard.writeText(tx.proofOfPayment);
-                                toast({
-                                  title: 'Copied',
-                                  description: 'The transaction ID is on your clipboard',
+                                notifyActions.push({
+                                  message: 'The transaction ID is on your clipboard',
+                                  dismissed: true,
+                                  options: {
+                                    variant: 'info',
+                                  },
                                 });
                               }}
                             >

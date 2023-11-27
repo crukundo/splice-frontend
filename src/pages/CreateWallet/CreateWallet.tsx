@@ -15,6 +15,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,13 +23,13 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { toast } from '@/components/ui/use-toast';
 
 import Meta from '@/components/Meta';
 import { AuthShell } from '@/components/auth-shell';
 import { Icons } from '@/components/icons';
 
 import { apiUrl, storedWallet } from '@/config';
+import useNotifications from '@/store/notifications';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface CreateNewWalletProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -42,6 +43,8 @@ function CreateNewWallet({ className, ...props }: CreateNewWalletProps) {
   const [, setValue] = useLocalStorage(storedWallet, '');
   const form = useForm();
 
+  const [, notifyActions] = useNotifications();
+
   // Create the valueToCountryMap by mapping the array
   const valueToCountryMap: { [key: string]: CountryType } = allowedCountries.reduce(
     (acc, country) => {
@@ -51,9 +54,8 @@ function CreateNewWallet({ className, ...props }: CreateNewWalletProps) {
     {} as { [key: string]: CountryType },
   );
 
-  const handleChosenCountry = (value: string) => {
-    const chosen = valueToCountryMap[value];
-    setSelectedCountry(chosen);
+  const handleChosenCountry = () => {
+    setSelectedCountry({ code: 'NG', label: 'Nigeria', phone: '234', currency: 'NGN' });
   };
 
   const formatPhoneNumber = (
@@ -71,8 +73,9 @@ function CreateNewWallet({ className, ...props }: CreateNewWalletProps) {
     return phoneNumber as string;
   };
 
-  const handleMobileNumber = (newNumber: string) => {
-    setMobileNumber(newNumber);
+  const handleMobileNumber = (event: any) => {
+    const newNumber = event.target.value;
+    setMobileNumber(newNumber.trim());
   };
 
   const handleWithdrawFee = (event: any) => {
@@ -99,10 +102,12 @@ function CreateNewWallet({ className, ...props }: CreateNewWalletProps) {
       });
 
       if (!response.ok) {
-        toast({
-          title: 'Something went wrong.',
-          description: 'Your wallet was not created. Please try again.',
-          variant: 'destructive',
+        notifyActions.push({
+          message: 'Having trouble getting your transactions. Please refresh.',
+          dismissed: true,
+          options: {
+            variant: 'error',
+          },
         });
         setIsLoading(false);
       }
@@ -141,7 +146,7 @@ function CreateNewWallet({ className, ...props }: CreateNewWalletProps) {
                   <FormField
                     control={form.control}
                     name="country"
-                    render={({ field }) => (
+                    render={() => (
                       <FormItem className="my-2">
                         <FormLabel>Select Your Country</FormLabel>
                         <FormMessage />
@@ -176,32 +181,12 @@ function CreateNewWallet({ className, ...props }: CreateNewWalletProps) {
                     <FormField
                       control={form.control}
                       name="mobileNumber"
-                      render={({ field }) => (
+                      render={() => (
                         <FormItem className="my-2">
                           <FormLabel>Mobile number</FormLabel>
                           <FormMessage />
-                          <PhoneInput
-                            inputProps={{
-                              required: true,
-                              autoFocus: true,
-                              className:
-                                'flex px-3 py-2 h-10 w-full rounded-md border border-input bg-transparent w-4 shrink-0 opacity-50',
-                            }}
-                            value={mobileNumber}
-                            country={selectedCountry?.code}
-                            placeholder={`${
-                              selectedCountry.code === 'NG'
-                                ? '234 80X 1234 5678'
-                                : selectedCountry.code === 'KE'
-                                ? '254 70X 123456'
-                                : selectedCountry.code === 'GH'
-                                ? '233 02X 123 5678'
-                                : 'Enter mobile number'
-                            }`}
-                            prefix={'+'}
-                            specialLabel=""
-                            onChange={handleMobileNumber}
-                          />
+                          <Input value={mobileNumber} onChange={handleMobileNumber} />
+                          <FormDescription>Include country code e.g 2348012345678</FormDescription>
                         </FormItem>
                       )}
                     />

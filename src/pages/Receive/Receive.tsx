@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input, SpliceAmountInput } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
 
 import Meta from '@/components/Meta';
 import SpliceQrCode from '@/components/QRCode';
@@ -18,6 +17,7 @@ import { Icons } from '@/components/icons';
 import { DashboardShell } from '@/components/shell';
 
 import { apiUrl } from '@/config';
+import useNotifications from '@/store/notifications';
 import { CopyIcon, Share2Icon } from 'lucide-react';
 
 function Receive() {
@@ -26,6 +26,7 @@ function Receive() {
   const [generatedInvoice, setGeneratedInvoice] = useState('');
   const form = useForm();
   const navigate = useNavigate();
+  const [, notifyActions] = useNotifications();
 
   useEffect(() => {
     async function checkWallet() {
@@ -49,9 +50,12 @@ function Receive() {
 
   const handleCopyInvoice = () => {
     navigator.clipboard.writeText(generatedInvoice);
-    toast({
-      title: 'Copied',
-      description: 'Invoice is on your clipboard',
+    notifyActions.push({
+      message: 'Invoice is on your clipboard',
+      dismissed: true,
+      options: {
+        variant: 'info',
+      },
     });
   };
 
@@ -88,10 +92,12 @@ function Receive() {
         });
 
         if (!response.ok) {
-          toast({
-            title: 'Something went wrong.',
-            description: 'Your invoice was not created. Please try again.',
-            variant: 'destructive',
+          notifyActions.push({
+            message: 'Your invoice was not created. Please try again.',
+            dismissed: true,
+            options: {
+              variant: 'error',
+            },
           });
         }
 
@@ -110,6 +116,7 @@ function Receive() {
     } else {
       setGeneratedInvoice('');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [invoiceAmount]);
 
   return (

@@ -19,13 +19,13 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from '@/components/ui/use-toast';
 
 import Meta from '@/components/Meta';
 import { AuthShell } from '@/components/auth-shell';
 import { Icons } from '@/components/icons';
 
 import { apiUrl, storedWallet } from '@/config';
+import useNotifications from '@/store/notifications';
 import { ChevronsUpDown } from 'lucide-react';
 
 function Welcome() {
@@ -37,6 +37,7 @@ function Welcome() {
   const [isWalletIdValid, setIsWalletIdValid] = useState(true);
   const navigate = useNavigate();
   const form = useForm();
+  const [, notifyActions] = useNotifications();
 
   const handleExistingWallet = async () => {
     try {
@@ -44,10 +45,12 @@ function Welcome() {
       const walletsRes = await fetch(`${apiUrl}/wallets`);
 
       if (!walletsRes.ok) {
-        toast({
-          title: 'Something went wrong.',
-          description: 'Please try again.',
-          variant: 'destructive',
+        notifyActions.push({
+          message: 'Something went wrong. Reload and try again.',
+          dismissed: true,
+          options: {
+            variant: 'error',
+          },
         });
       }
 
@@ -69,18 +72,22 @@ function Welcome() {
           setIsLoading(false);
           navigate('/wallet');
         } else {
-          toast({
-            title: "Wallet doesn't exist",
-            description: "Sorry we couldn't find this wallet. Are you sure?",
-            variant: 'destructive',
+          notifyActions.push({
+            message: "Sorry we couldn't find this wallet. Are you sure?",
+            dismissed: true,
+            options: {
+              variant: 'error',
+            },
           });
           setIsLoading(false);
         }
       } else {
-        toast({
-          title: 'Invalid wallet',
-          description: 'Please use a valid wallet ID',
-          variant: 'destructive',
+        notifyActions.push({
+          message: 'Invalid wallet. Please use a valid wallet ID',
+          dismissed: true,
+          options: {
+            variant: 'error',
+          },
         });
         setIsLoading(false);
       }

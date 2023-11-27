@@ -1,11 +1,18 @@
 import { useCallback, useEffect, useRef } from 'react';
+
+import { cn } from '@/lib/utils';
+
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button, buttonVariants } from '@/components/ui/button';
+
+import useNotifications from '@/store/notifications';
+import type { SnackbarKey } from 'notistack';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 
-import { toast } from '@/components/ui/use-toast';
-import { ToastAction } from '@/components/ui/toast';
-import resetApp from '@/lib/reset-app';
-
+// TODO (Suren): this should be a custom hook :)
 function SW() {
+  const [, notificationsActions] = useNotifications();
+  const notificationKey = useRef<SnackbarKey | null>(null);
   const {
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
@@ -16,25 +23,47 @@ function SW() {
     setOfflineReady(false);
     setNeedRefresh(false);
 
-  }, [setOfflineReady, setNeedRefresh]);
+    if (notificationKey.current) {
+      notificationsActions.close(notificationKey.current);
+    }
+  }, [setOfflineReady, setNeedRefresh, notificationsActions]);
 
   useEffect(() => {
     if (offlineReady) {
-      toast({
-        title: "Offline mode",
-        description: "Splice is ready to work offline.",
-      })
+      notificationsActions.push({
+        options: {
+          autoHideDuration: 4500,
+          content: (
+            <Alert>
+              <AlertTitle>Heads up!</AlertTitle>
+              <AlertDescription>Splice is ready to work offline.</AlertDescription>
+            </Alert>
+          ),
+        },
+      });
     } else if (needRefresh) {
-     
-      toast({
-        title: "Freshly squeezed!",
-        description: "Splice was just updated! Reload",
-        action: (
-          <ToastAction onClick={resetApp} altText="Update">Reload</ToastAction>
-        ),
-      })
+      notificationKey.current = notificationsActions.push({
+        message: 'Freshly squeezed. Click reload to update',
+        options: {
+          variant: 'default',
+          persist: true,
+          action: (
+            <>
+              <Button
+                className={cn(buttonVariants({ variant: 'secondary', className: 'mr-2' }))}
+                onClick={() => updateServiceWorker(true)}
+              >
+                Reload
+              </Button>
+              <Button className={cn(buttonVariants({ variant: 'ghost' }))} onClick={close}>
+                Close
+              </Button>
+            </>
+          ),
+        },
+      });
     }
-  }, [close, needRefresh, offlineReady, updateServiceWorker]);
+  }, [close, needRefresh, offlineReady, notificationsActions, updateServiceWorker]);
 
   return null;
 }

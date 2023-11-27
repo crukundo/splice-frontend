@@ -17,13 +17,13 @@ import useLocalStorage from '@/hooks/use-local-storage';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { toast } from '@/components/ui/use-toast';
 
 import Meta from '@/components/Meta';
 import { DashboardHeader } from '@/components/header';
 import { DashboardShell } from '@/components/shell';
 
 import { apiUrl, storedWallet } from '@/config';
+import useNotifications from '@/store/notifications';
 import transactionsStateStore from '@/store/transactions';
 import { ArrowDownRightIcon, ArrowUpRightIcon } from 'lucide-react';
 
@@ -32,6 +32,8 @@ function Wallet() {
   const [loading, setLoading] = useState(false);
   const [storedValue] = useLocalStorage(storedWallet, {});
   const [transactionsState, setTransactionsState] = useRecoilState(transactionsStateStore);
+
+  const [, notifyActions] = useNotifications();
 
   const navigate = useNavigate();
 
@@ -61,10 +63,12 @@ function Wallet() {
       });
 
       if (!response.ok) {
-        // toast({
-        //   title: 'Something went wrong.',
-        //   description: "We couldn't find your wallet. Please refresh.",
-        //   variant: 'destructive',
+        // notifyActions.push({
+        //   message: "We couldn't find your wallet. Please refresh.",
+        //   dismissed: true,
+        //   options: {
+        //     variant: 'error',
+        //   },
         // });
         console.log("We couldn't find your wallet. Please refresh.");
       }
@@ -89,10 +93,12 @@ function Wallet() {
       });
 
       if (!response.ok) {
-        toast({
-          title: 'Something went wrong.',
-          description: 'Having trouble getting your transactions. Please refresh.',
-          variant: 'destructive',
+        notifyActions.push({
+          message: 'Having trouble getting your transactions. Please refresh.',
+          dismissed: true,
+          options: {
+            variant: 'error',
+          },
         });
       }
 
@@ -224,7 +230,6 @@ function Wallet() {
     );
   };
 
-  // eslint-disable-next-line react/display-name
   const TransactionsListing = memo(({ payments }: any) => (
     <div className="space-y-8">
       {payments.map((payment: PaymentResponse) => (
@@ -255,6 +260,8 @@ function Wallet() {
     </div>
   ));
 
+  TransactionsListing.displayName = 'All Transactions Card';
+
   return (
     <>
       <Meta title="Wallet &amp; Transactions" />
@@ -272,7 +279,7 @@ function Wallet() {
               <CardTitle>Transaction History</CardTitle>
             </CardHeader>
             <CardContent>
-              {transactionsState[0].payments.length === 0 ? (
+              {transactionsState.length === 0 ? (
                 <p className="text-xs">
                   Your history will show up here once you make your first transaction.
                 </p>

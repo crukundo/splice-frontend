@@ -1,4 +1,5 @@
-import { DashboardConfig } from '@/lib/interfaces';
+import { DashboardConfig, Notifications } from '@/lib/interfaces';
+import isMobile from '@/lib/is-mobile';
 
 const title = 'Splice Africa';
 
@@ -9,7 +10,6 @@ const repository = 'https://github.com/splice-africa';
 const apiUrl = 'https://splice.africa/api';
 
 const storedWallet = 'splice-wallet';
-
 
 const defaultMetaTags = {
   image: '', // add default og cover
@@ -25,29 +25,39 @@ const loader = {
 const dashboardConfig: DashboardConfig = {
   mainNav: [
     {
-      title: "",
-      href: "/",
+      title: '',
+      href: '/',
     },
   ],
   sidebarNav: [
     {
-      title: "Wallet",
-      href: "/wallet",
-      icon: "wallet",
+      title: 'Wallet',
+      href: '/wallet',
+      icon: 'wallet',
     },
     {
-      title: "Send",
-      href: "/send",
-      icon: "send",
+      title: 'Send',
+      href: '/send',
+      icon: 'send',
     },
     {
-      title: "Receive",
-      href: "/receive",
-      icon: "invoices",
+      title: 'Receive',
+      href: '/receive',
+      icon: 'invoices',
     },
   ],
-}
+};
 
+const notifications: Notifications = {
+  options: {
+    anchorOrigin: {
+      vertical: 'bottom',
+      horizontal: 'left',
+    },
+    autoHideDuration: 6000,
+  },
+  maxSnack: isMobile ? 3 : 4,
+};
 
 export {
   repository,
@@ -57,5 +67,6 @@ export {
   loader,
   apiUrl,
   storedWallet,
-  dashboardConfig
+  dashboardConfig,
+  notifications,
 };
