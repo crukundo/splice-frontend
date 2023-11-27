@@ -1,23 +1,19 @@
-import * as React from "react"
+import * as React from 'react';
 
-import { cn } from "@/lib/utils"
-import { SiteFooter } from "./site-footer"
-import { Link } from "react-router-dom"
-import { buttonVariants } from "./ui/button"
-import { dashboardConfig } from "@/config"
-import { MainNav } from "./main-nav"
-import { ModeToggle } from "./mode-toggle"
+import { cn } from '@/lib/utils';
 
+import { MainNav } from './main-nav';
+import { ModeToggle } from './mode-toggle';
+import { SiteFooter } from './site-footer';
+import { dashboardConfig } from '@/config';
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface AuthShellProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function AuthShell({
-  children,
-  className,
-  ...props
-}: AuthShellProps) {
+export function AuthShell({ children, className, ...props }: AuthShellProps) {
   return (
-    <div className={cn("min-h-screen", className)} {...props}>
-       <div className="flex min-h-screen flex-col">
+    <div className={cn('min-h-screen', className)} {...props}>
+      <div className="flex min-h-screen flex-col">
         <header className="container z-40 bg-background">
           <div className="flex h-20 items-center justify-between py-6">
             <MainNav items={dashboardConfig.mainNav} />
@@ -39,5 +35,5 @@ export function AuthShell({
         <SiteFooter />
       </div>
     </div>
-  )
+  );
 }

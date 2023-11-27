@@ -22,7 +22,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { toast } from '@/components/ui/use-toast';
 
 import Meta from '@/components/Meta';
 import { AuthShell } from '@/components/auth-shell';
@@ -99,11 +98,12 @@ function CreateNewWallet({ className, ...props }: CreateNewWalletProps) {
       });
 
       if (!response.ok) {
-        toast({
-          title: 'Something went wrong.',
-          description: 'Your wallet was not created. Please try again.',
-          variant: 'destructive',
-        });
+        // toast({
+        //   title: 'Something went wrong.',
+        //   description: 'Your wallet was not created. Please try again.',
+        //   variant: 'destructive',
+        // });
+        console.log('Your wallet was not created. Please try again.');
       }
 
       await response.json().then((data) => {
@@ -188,6 +188,15 @@ function CreateNewWallet({ className, ...props }: CreateNewWalletProps) {
                             }}
                             value={mobileNumber}
                             country={selectedCountry?.code}
+                            placeholder={`${
+                              selectedCountry.code === 'NG'
+                                ? '234 80X 1234 5678'
+                                : selectedCountry.code === 'KE'
+                                ? '254 70X 123456'
+                                : selectedCountry.code === 'GH'
+                                ? '233 02X 123 5678'
+                                : 'Enter mobile number'
+                            }`}
                             prefix={'+'}
                             specialLabel=""
                             onChange={handleMobileNumber}

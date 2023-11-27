@@ -9,6 +9,7 @@ import {
   WalletTransactionsResponse,
 } from '@/lib/interfaces';
 import { getCurrentWallet } from '@/lib/session';
+import sleep from '@/lib/sleep';
 import { formatDate } from '@/lib/utils';
 
 import useLocalStorage from '@/hooks/use-local-storage';
@@ -60,11 +61,12 @@ function Wallet() {
       });
 
       if (!response.ok) {
-        toast({
-          title: 'Something went wrong.',
-          description: "We couldn't find your wallet. Please refresh.",
-          variant: 'destructive',
-        });
+        // toast({
+        //   title: 'Something went wrong.',
+        //   description: "We couldn't find your wallet. Please refresh.",
+        //   variant: 'destructive',
+        // });
+        console.log("We couldn't find your wallet. Please refresh.");
       }
 
       const responseData: WalletRequestResponse = await response.json();
@@ -121,7 +123,7 @@ function Wallet() {
         }
       }
     };
-
+    sleep(2000);
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storedValue]);
@@ -270,7 +272,7 @@ function Wallet() {
               <CardTitle>Transaction History</CardTitle>
             </CardHeader>
             <CardContent>
-              {transactionsState.length === 0 ? (
+              {transactionsState[0].payments.length === 0 ? (
                 <p className="text-xs">
                   Your history will show up here once you make your first transaction.
                 </p>
