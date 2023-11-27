@@ -35,7 +35,7 @@ export const Icons = {
   logo: () => {
 
   return (
-    <img className="h-8 w-8" src='src/assets/logo.svg' alt="Splice Africa Logo" />
+    <img className="h-8 w-8" src='../assets/logo.svg' alt="Splice Africa Logo" />
   );
   },
   close: X,

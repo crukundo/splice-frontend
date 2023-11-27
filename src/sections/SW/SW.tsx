@@ -3,6 +3,7 @@ import { useRegisterSW } from 'virtual:pwa-register/react';
 
 import { toast } from '@/components/ui/use-toast';
 import { ToastAction } from '@/components/ui/toast';
+import resetApp from '@/lib/reset-app';
 
 function SW() {
   const {
@@ -29,7 +30,7 @@ function SW() {
         title: "Freshly squeezed!",
         description: "Splice was just updated! Reload",
         action: (
-          <ToastAction altText="Update">Reload</ToastAction>
+          <ToastAction onClick={resetApp} altText="Update">Reload</ToastAction>
         ),
       })
     }

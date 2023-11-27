@@ -9,10 +9,16 @@
     "^(^react$|@react|react|^recoil$)",
     "^@mui/(.*)$",
     "<THIRD_PARTY_MODULES>",
-    "^@/(.*)$",
+    "^@/config/(.*)$",
+    "^@/lib/(.*)$",
+    "^@/hooks/(.*)$",
+    "^@/components/ui/(.*)$",
+    "^@/components/(.*)$",
+    "",
     "^[./]"
   ],
   "importOrderGroupNamespaceSpecifiers": true,
   "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true
+  "importOrderSortSpecifiers": true,
+  "plugins": ["prettier-plugin-tailwindcss"]
 }
