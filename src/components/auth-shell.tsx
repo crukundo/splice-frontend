@@ -20,8 +20,10 @@ export function AuthShell({ children, className, ...props }: AuthShellProps) {
             <MainNav items={dashboardConfig.mainNav} />
             <nav>
               <Link
-                to="/"
-                className={cn(buttonVariants({ variant: 'secondary', size: 'sm' }), 'px-4')}
+                to="https://docs.google.com/forms/d/e/1FAIpQLSe5HcWKicE0ESxkBTP7KkXaJjwIh3B6sygkUsjbasv_Lrzt6g/viewform"
+                target="_blank"
+                rel="noreferrer"
+                className={cn(buttonVariants({ variant: 'secondary', size: 'sm' }))}
               >
                 Request a demo
               </Link>

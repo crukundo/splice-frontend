@@ -23,7 +23,12 @@ function Landing() {
               borders.
             </p>
             <div className="space-x-4">
-              <Link to="/" className={cn(buttonVariants({ size: 'lg' }))}>
+              <Link
+                to="https://docs.google.com/forms/d/e/1FAIpQLSe5HcWKicE0ESxkBTP7KkXaJjwIh3B6sygkUsjbasv_Lrzt6g/viewform"
+                target="_blank"
+                rel="noreferrer"
+                className={cn(buttonVariants({ size: 'lg' }))}
+              >
                 Request a demo today
               </Link>
             </div>
@@ -44,7 +49,7 @@ function Landing() {
             </p>
             <div className="space-x-4 py-2">
               <Link
-                to={'/'}
+                to={'mailto:spliceafrica@gmail.com'}
                 target="_blank"
                 rel="noreferrer"
                 className={cn(buttonVariants({ variant: 'outline', size: 'lg' }))}
