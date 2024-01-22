@@ -45,7 +45,14 @@ export function MainNav({ items, mobileLinks, children }: MainNavProps) {
         className="flex items-center space-x-2 md:hidden"
         onClick={() => setShowMobileMenu(!showMobileMenu)}
       >
-        {showMobileMenu ? <Icons.close /> : <Icons.logo />}
+        {showMobileMenu ? (
+          <Icons.close />
+        ) : (
+          <Link to="/" className="flex items-center space-x-2">
+            <Icons.logo />
+            <span className="font-semibold">{title}</span>
+          </Link>
+        )}
       </button>
       {showMobileMenu && mobileLinks && <MobileNav items={mobileLinks}>{children}</MobileNav>}
     </div>
