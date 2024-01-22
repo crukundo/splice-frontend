@@ -13,7 +13,7 @@ const storedWallet = 'splice-wallet';
 
 const defaultMetaTags = {
   image: '', // add default og cover
-  description: "Connecting Africa via Bitcoin's globally accessible liquidity network",
+  description: 'Revolutionizing Payments Infrastructure across Africa.',
 };
 
 const loader = {

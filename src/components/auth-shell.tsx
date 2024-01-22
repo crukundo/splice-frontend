@@ -1,10 +1,11 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 import { cn } from '@/lib/utils';
 
 import { MainNav } from './main-nav';
-import { ModeToggle } from './mode-toggle';
 import { SiteFooter } from './site-footer';
+import { buttonVariants } from './ui/button';
 import { dashboardConfig } from '@/config';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -18,16 +19,13 @@ export function AuthShell({ children, className, ...props }: AuthShellProps) {
           <div className="flex h-20 items-center justify-between py-6">
             <MainNav items={dashboardConfig.mainNav} />
             <nav>
-              {/* <Link
-                to="/login"
-                className={cn(
-                  buttonVariants({ variant: "secondary", size: "sm" }),
-                  "px-4"
-                )}
+              <Link
+                to="/"
+                className={cn(buttonVariants({ variant: 'secondary', size: 'sm' }), 'px-4')}
               >
-                Login
-              </Link> */}
-              <ModeToggle />
+                Request a demo
+              </Link>
+              {/* <ModeToggle /> */}
             </nav>
           </div>
         </header>

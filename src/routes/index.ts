@@ -4,9 +4,13 @@ import { Pages, Routes } from './types';
 import { ArrowDownRightIcon, ArrowUpRightIcon, WalletIcon } from 'lucide-react';
 
 const routes: Routes = {
+  [Pages.Landing]: {
+    component: asyncComponentLoader(() => import('@/pages/Landing')),
+    path: '/',
+  },
   [Pages.Welcome]: {
     component: asyncComponentLoader(() => import('@/pages/Welcome')),
-    path: '/',
+    path: '/app',
   },
   [Pages.CreateNewWallet]: {
     component: asyncComponentLoader(() => import('@/pages/CreateWallet')),

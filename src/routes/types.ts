@@ -1,10 +1,10 @@
 import { FC } from 'react';
 import { PathRouteProps } from 'react-router-dom';
 
-import type { SvgIconProps } from '@mui/material/SvgIcon';
 import { LucideIcon } from 'lucide-react';
 
 enum Pages {
+  Landing,
   Welcome,
   CreateNewWallet,
   Wallet,
