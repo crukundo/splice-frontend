@@ -12,7 +12,7 @@ const apiUrl = 'https://splice.africa/api';
 const storedWallet = 'splice-wallet';
 
 const defaultMetaTags = {
-  image: '', // add default og cover
+  image: '/og.png', // add default og cover
   description: 'Revolutionizing Payments Infrastructure across Africa.',
 };
 
